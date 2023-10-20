@@ -29,6 +29,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -64,6 +65,14 @@ public class RegistroController {
     @FXML
     private Button btn_registro;
     @FXML
+    private Button btn_verContra;
+    @FXML
+    private Button btn_verContra2;
+    @FXML
+    private ImageView img_ojo;
+    @FXML
+    private ImageView img_ojo2;
+    @FXML
     private Label lbl_direcion;
     @FXML
     private TextField txt_direccion;
@@ -76,6 +85,10 @@ public class RegistroController {
     @FXML
     private TextField txt_tele;
     @FXML
+    private TextField txt_contraReve;
+    @FXML
+    private TextField txt_contraRepeReve;
+    @FXML
     private PasswordField psw_contra;
     @FXML
     private PasswordField psw_contraRepe;
@@ -84,16 +97,16 @@ public class RegistroController {
 
     private String email, contraseña, zip, telefono, nombre;
 
-    private static final String patronZip = "^[0-9]{5}$";
+    private static final String patronZip = "^\\d{5}$";
     private static final Pattern zipMatcher = Pattern.compile(patronZip);
 
-    private static final String patronPhone = "(6|7|8|9)\\\\d{8}$";
+    private static final String patronPhone = "^(\\+34|0034|34)?[6|7|9][0-9]{8}$";
     private static final Pattern phoneMatcher = Pattern.compile(patronPhone);
 
-    private static final String patronContraseña = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$";
+    private static final String patronContraseña = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).+$";
     private static final Pattern passwordMatcher = Pattern.compile(patronContraseña);
 
-    private static final String patronEmail = "^([0-9a-zA-Z]+[-._+&])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{10,40}$";
+    private static final String patronEmail = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
     private static final Pattern emailMatcher = Pattern.compile(patronEmail);
     protected static final Logger LOGGER = Logger.getLogger("/controlador/RegistroController");
 
@@ -115,6 +128,11 @@ public class RegistroController {
         lbl_error.setVisible(false);
         //El campo del hyper-link esthá habilitado
         lbl_hyperlinkCuenta.setDisable(false);
+        //Los campos de mostrar la contraseña estarán deshabilitados e invisibles
+        txt_contraReve.setDisable(true);
+        txt_contraReve.setVisible(false);
+        txt_contraRepeReve.setDisable(true);
+        txt_contraRepeReve.setVisible(false);
         //Evento hyper-enlace que te envia a la ventana de inicio de sesion
         lbl_hyperlinkCuenta.setOnMouseClicked(this::tienesCuenta);
         //Eventos que habilitan la validacion de los textareas
@@ -157,58 +175,61 @@ public class RegistroController {
         try {
             //Comprobamos que el nombre no excede de 15 carácteres
             if (txt_nombre.getText().trim().length() > 15) {
-                throw new IncorrectPatternException("El nombre de usuario es demasiado largo");
+                throw new IncorrectPatternException("El nombre de usuario es demasiado largo.");
 
             }
             //Comprobamos el formato del correo y si no excecde de 40 carácteres
             email = txt_email.getText();
-            if (!(emailMatcher.matcher(email).matches()) || txt_email.getText().length() > 40) {
-                throw new IncorrectPatternException("El formato no está permitido (ej, xxx@xxx.xxx)");
+            if (!emailMatcher.matcher(email).matches() || email.length() > 40) {
+                throw new IncorrectPatternException("El formato no está permitido (ej, xxx@xxx.xxx) y no debe tener mas de 40 caracteres.");
             }
             //Comprobamos que la contraseña se alfanumerica, tenga mayúsculas, minúsculas y tenga más de 8 carácteres
             contraseña = psw_contra.getText();
-            if (!(passwordMatcher.matcher(contraseña).matches())) {
-                throw new IncorrectPatternException("El formato no está permitido, introduce más 8 carácteres alfanuméricos"
-                        + "añade una minuscula o mayúscula al menos");
+            if (!(passwordMatcher.matcher(contraseña).matches()) || contraseña.length() < 8) {
+                throw new IncorrectPatternException("Formato erroneo, introduce más 8 carácteres alfanuméricos"
+                        + " añade una minuscula o mayúscula al menos.");
                 //Comprobamos que las contraseñas coinciden
             } else if (!psw_contra.getText().equals(psw_contraRepe.getText())) {
-                throw new PasswordDoesntMatchException("Las contraseñas no coinciden");
+                throw new PasswordDoesntMatchException("Las contraseñas no coinciden.");
             }
             //Comprobamos que el código postal tenga un formato de 5 digitos
             zip = txt_zip.getText();
             if (!(zipMatcher.matcher(zip).matches())) {
-                throw new IncorrectPatternException("El formato no está permitido, (ej, 45320");
+                throw new IncorrectPatternException("El formato no está permitido, (ej, 45320).");
             }
             //Comprobamos que el teléfono tiene el patrón estándar español de 9 digitos
-            telefono = txt_tele.getText();
+            telefono = "+34" + txt_tele.getText();
             if (!(phoneMatcher.matcher(telefono).matches())) {
-                throw new IncorrectPatternException("El formato no está permitido, (ej, 643 567 453/ 945 564 234");
+                throw new IncorrectPatternException("El formato no está permitido, (ej, +34 643 567 453/ 945 564 234).");
             }
             /*
                 Las excepciones de IncorrectPasswordException y IncorrectPatternException se mostrarán en el
                 lbl_error, las excepciones genericas se mostraran en consola a través de un logger
              */
         } catch (IncorrectPatternException e) {
-            txt_nombre.setText("");
+            /*txt_nombre.setText("");
             txt_email.setText("");
             psw_contra.setText("");
             psw_contraRepe.setText("");
             txt_direccion.setText("");
             txt_zip.setText("");
-            txt_tele.setText("");
+            txt_tele.setText("");*/
+            txt_nombre.requestFocus();
             lbl_error.setVisible(true);
             lbl_error.setText(e.getMessage());
         } catch (PasswordDoesntMatchException e) {
-            txt_nombre.setText("");
+            /*txt_nombre.setText("");
             txt_email.setText("");
             psw_contra.setText("");
             psw_contraRepe.setText("");
             txt_direccion.setText("");
             txt_zip.setText("");
-            txt_tele.setText("");
+            txt_tele.setText("");*/
+            txt_nombre.requestFocus();
             lbl_error.setVisible(true);
             lbl_error.setText(e.getMessage());
         } catch (Exception e) {
+            txt_nombre.requestFocus();
             lbl_error.setVisible(true);
             lbl_error.setText("Ha ocurrido un error inesperado");
             LOGGER.info(e.getMessage());
