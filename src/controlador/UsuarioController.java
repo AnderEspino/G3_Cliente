@@ -14,6 +14,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
 /**
  * Esta clase funciona como el controlador de la ventana Usuario.
@@ -42,6 +43,10 @@ public class UsuarioController {
      */
     public void initStage(Parent root) {
 
+    }
+
+    void setStage(Stage stage) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
