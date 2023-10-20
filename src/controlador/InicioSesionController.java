@@ -42,10 +42,8 @@ public class InicioSesionController {
     /**
      * Initializes the controller class.
      */
-    
-      public void initStage(Parent root) {
+    public void initStage(Parent root) {
 
     }
-    
 
 }
