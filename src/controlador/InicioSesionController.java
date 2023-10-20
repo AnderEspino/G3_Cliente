@@ -8,7 +8,9 @@ package controlador;
 import excepciones.IncorrectCredentialsException;
 import excepciones.PasswordDoesntMatchException;
 import excepciones.UserDoesntExistsException;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.ConnectException;
@@ -27,12 +29,16 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import modelo.Sign;
 import modelo.SocketFactory;
+import modelo.User;
 
 /**
  * Esta clase funciona como controlador de la ventana de Inicio de Sesion.
@@ -41,6 +47,8 @@ import modelo.SocketFactory;
  */
 public class InicioSesionController {
 
+    @FXML
+    private Sign interf;
     @FXML
     private Stage stage;
     @FXML
@@ -59,6 +67,10 @@ public class InicioSesionController {
     private Label lblCuenta;
     @FXML
     private PasswordField pswContraseña;
+    @FXML
+    private static final String patronEmail = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+    @FXML
+    private static final Pattern EMAIL_PATTERN = Pattern.compile(patronEmail);
     @FXML
     //Mediante este patron controlamos que la contraseña no contenga menos de 6 carácteres, que contenga al menos una letra y al menos una minuscula.
     private static final String PASSWORD_REGEX = "(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9]{8,}$";
@@ -101,6 +113,7 @@ public class InicioSesionController {
         stage.setResizable(false);
 
         stage.setScene(scene);
+
         //Mediante este evento llamamos al metodo de cambiar a la ventana de registro.
         lblCuenta.setOnMouseClicked(event -> {
             handleLblCuentaClick();
@@ -113,6 +126,11 @@ public class InicioSesionController {
         pswContraseña.textProperty().addListener((observable, oldValue, newValue) -> {
             camposInformados();
         });
+        btnInicioSesion.setOnMouseClicked(event -> {
+
+            handleSignInAction();
+
+        });
         stage.setOnCloseRequest(this::handleCloseRequest);
         stage.show();
     }
@@ -124,21 +142,21 @@ public class InicioSesionController {
      * @param event Un parametro devuelto de una accion
      */
     @FXML
-    private void handleSignInAction(ActionEvent event) {
+    private void handleSignInAction() {
 
         try {
-
+            error.setText("");
             if (camposInformados() && maxCarecteres()) {
-                /* User user = new User();
+                User user = new User();
                 user.setEmail(textEmail.getText());
-                user.setPassword(pswContraseña.getText());
+                user.setContraseña(pswContraseña.getText());
 
-                SocketFactory fac = new LogicableFactory();
+                SocketFactory fac = new SocketFactory();
 
-                fac.getDataTraffic().signIn(user);
-                 */
+                interf = fac.getSocket();
+                interf.excecuteLogin(user);
 
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/controllers/VLogOut.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/Usuario.fxml"));
 
                 Parent root = loader.load();
 
@@ -181,14 +199,12 @@ public class InicioSesionController {
     private boolean camposInformados() {
         //Validamos que el campo email no esta vacio
         if (textEmail.getText().trim().isEmpty()) {
-            error.setText("No puedes dejar el campo vacio");
             //Deshabilitamos el boton de inicio de sesion
             btnInicioSesion.setDisable(true);
-            
+
             return false;
             //Validamos que el campo contraseña no esta vacio
         } else if (pswContraseña.getText().trim().isEmpty()) {
-            error.setText("No puedes dejar el campo vacio");
             //Deshabilitamos el boton de inicio de sesion
             btnInicioSesion.setDisable(true);
             return false;
@@ -211,13 +227,17 @@ public class InicioSesionController {
         if (textEmail.getText().trim().length() >= 40) {
             //Hacemos que el lbl error se vea
             error.setVisible(true);
-            error.setText("No se puede superar los 40 caracteres");
+            error.setText("No se puede superar los 40 caracteres en el email");
             return false;
             //Comprobamos si la contraseña cumple con el patron
-        } else if (PASSWORD__PATTERN.matcher(pswContraseña.getText()).matches()) {
+        } else if (!EMAIL_PATTERN.matcher(textEmail.getText()).matches()) {
+            error.setVisible(true);
+            error.setText("El email no cumple con el patron ");
+            return false;
+        } else if (!PASSWORD__PATTERN.matcher(pswContraseña.getText()).matches()) {
             //Hacemos que el lbl error se vea
             error.setVisible(true);
-            error.setText("La contraseña debe de contener al menos 6 caracteres y una mayus y minuscula");
+            error.setText("La contraseña debe de contener al menos 6 caracteres, una mayuscula y minuscula");
             return false;
         } else {
             return true;
