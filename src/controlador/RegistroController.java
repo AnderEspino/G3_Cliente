@@ -319,8 +319,8 @@ public class RegistroController {
                 && !txt_direccion.getText().trim().isEmpty()
                 && !txt_tele.getText().trim().isEmpty()
                 && !txt_zip.getText().trim().isEmpty()
-                && !psw_contra.getText().trim().isEmpty()
-                && !psw_contraRepe.getText().trim().isEmpty()) {
+                && (!psw_contra.getText().trim().isEmpty() || !txt_contraReve.getText().trim().isEmpty())
+                && (!psw_contraRepe.getText().trim().isEmpty() || !txt_contraRepeReve.getText().trim().isEmpty())) {
             btn_registro.setDisable(false);
         } else {
             /*
