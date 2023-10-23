@@ -1,39 +1,36 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * @author Ander
+ * El paquete que contiene todos los controladores de las ventanas.
  */
 package controlador;
 
 import excepciones.IncorrectCredentialsException;
 import excepciones.PasswordDoesntMatchException;
 import excepciones.UserDoesntExistsException;
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import javafx.event.ActionEvent;
 import java.io.IOException;
 import java.net.ConnectException;
-import java.net.URL;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-import javafx.event.EventType;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import modelo.Sign;
@@ -47,9 +44,7 @@ import modelo.User;
  */
 public class InicioSesionController {
 
-    @FXML
     private Sign interf;
-    @FXML
     private Stage stage;
     @FXML
     private Label lbl_Inicio;
@@ -60,6 +55,12 @@ public class InicioSesionController {
     @FXML
     private Label lblPassword;
     @FXML
+    private Button btn_verContra;
+    @FXML
+    private ImageView img_ojo;
+    @FXML
+    private TextField txt_contraReve;
+    @FXML
     private TextField textEmail;
     @FXML
     private Button btnInicioSesion;
@@ -67,23 +68,19 @@ public class InicioSesionController {
     private Label lblCuenta;
     @FXML
     private PasswordField pswContraseña;
-    @FXML
+    //Aqui asignamos el patron del email
     private static final String patronEmail = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
-    @FXML
     private static final Pattern EMAIL_PATTERN = Pattern.compile(patronEmail);
-    @FXML
-    //Mediante este patron controlamos que la contraseña no contenga menos de 6 carácteres, que contenga al menos una letra y al menos una minuscula.
+    //Aqui asignamos el patron de la contraseña
     private static final String PASSWORD_REGEX = "(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9]{8,}$";
-    @FXML
-    //Esta linea crea un objeto Pattern que valida si la contraseña cumple con el patron correcto.
     private static final Pattern PASSWORD__PATTERN = Pattern.compile(PASSWORD_REGEX);
 
-    @FXML
-    // Esta linea creamos un logger que se utiliza para registrar mensajes y eventos en una aplicación Java.
     private static final Logger LOGGER = Logger.getLogger("/controlador/InicioSesionController");
 
     /**
      * Initializes the controller class.
+     *
+     * @param root
      */
     public void initStage(Parent root) {
 
@@ -97,13 +94,18 @@ public class InicioSesionController {
         textEmail.setDisable(false);
         //El campo contraseña estará habilitado.
         pswContraseña.setDisable(false);
+        //El campo contraseña esta visible.
+        pswContraseña.setVisible(true);
+        //El campo contraReve esta deshabilitado.
+        txt_contraReve.setDisable(true);
+        //El campo contraReve esta invisible.
+        txt_contraReve.setVisible(false);
         //El campo error esta habilitado.
         error.setDisable(false);
         //El texto cuenta esta habilitado.
         lblCuenta.setDisable(false);
-        //El foco estará puesto en el campo email del usuario (textEmail).
+        //Al inicio de la ventana el foco estará puesto en el campo email del usuario (textEmail).
         textEmail.requestFocus();
-
         //Hacemos que el lbl error no se vea
         error.setVisible(false);
         //El título de la ventana es “InicioSesion”.
@@ -111,7 +113,7 @@ public class InicioSesionController {
 
         //La ventana no es redimensionable
         stage.setResizable(false);
-
+        //Añadimos la escena al escenario (Stage).
         stage.setScene(scene);
 
         //Mediante este evento llamamos al metodo de cambiar a la ventana de registro.
@@ -126,11 +128,19 @@ public class InicioSesionController {
         pswContraseña.textProperty().addListener((observable, oldValue, newValue) -> {
             camposInformados();
         });
-        btnInicioSesion.setOnMouseClicked(event -> {
-
-            handleSignInAction();
-
+        //Mediante esta propiedad llamamos al metodo camposInformados()
+        txt_contraReve.textProperty().addListener((observable, oldValue, newValue) -> {
+            camposInformados();
         });
+        //Mediante el siguiente evento llamamos al evento handleBtnRespuesta cuando se hace click sobre el boton verContra.
+        btn_verContra.setOnMouseClicked(this::handleBtnRespuesta);
+
+        btn_verContra.setTooltip(new Tooltip("Visualizar/Ocultar contraseña"));
+        //Mediante este evento, cuando el usuario haga click sobre el boton de inicar sesion se inicia el metodo handleSignInAction().
+        btnInicioSesion.setOnAction(this::handleSignInAction);
+        //Este oherramienta muestra un mensaje cuando el raton esta colocado encima del boton de inicio de sesion.
+        btnInicioSesion.setTooltip(new Tooltip("Pulsa para inicar sesion"));
+        //Mediante este evento llamamos al metodo handeCloseRequest cuando hacemos click sobre el boton X (Boton de cerrar la ventana).
         stage.setOnCloseRequest(this::handleCloseRequest);
         stage.show();
     }
@@ -141,8 +151,7 @@ public class InicioSesionController {
      *
      * @param event Un parametro devuelto de una accion
      */
-    @FXML
-    private void handleSignInAction() {
+    private void handleSignInAction(ActionEvent event) {
 
         try {
             error.setText("");
@@ -204,7 +213,7 @@ public class InicioSesionController {
 
             return false;
             //Validamos que el campo contraseña no esta vacio
-        } else if (pswContraseña.getText().trim().isEmpty()) {
+        } else if (pswContraseña.getText().trim().isEmpty() && txt_contraReve.getText().trim().isEmpty()) {
             //Deshabilitamos el boton de inicio de sesion
             btnInicioSesion.setDisable(true);
             return false;
@@ -221,6 +230,7 @@ public class InicioSesionController {
      * contener el texto email y la contraseña.
      *
      * @author Ander
+     * @return boolean
      */
     private boolean maxCarecteres() {
         //Comprobamos que el campo de email no contiene más de 40 caracteres 
@@ -250,7 +260,6 @@ public class InicioSesionController {
      *
      * @author Ander
      */
-    @FXML
     private void handleLblCuentaClick() {
         try {
 
@@ -279,6 +288,7 @@ public class InicioSesionController {
      * salir.
      *
      * @author Ander
+     * @param event
      */
     private void handleCloseRequest(WindowEvent event) {
         //Creamos un nuevo objeto Alerta 
@@ -290,11 +300,37 @@ public class InicioSesionController {
 
         Optional<ButtonType> answer = alert.showAndWait();
         if (answer.get() == ButtonType.OK) {
-            stage.close();
+            Platform.exit();
         } else {
             event.consume();
         }
 
+    }
+
+    private void handleBtnRespuesta(MouseEvent event) {
+        int contadorClics = 0;
+        int MAX_CLICS = 1; // Número máximo de clics para alternar entre mostrar y ocultar contraseñas
+
+        if (event.getButton()
+                .equals(MouseButton.PRIMARY)) {
+            contadorClics++;
+            txt_contraReve.setDisable(false);
+            if (contadorClics % MAX_CLICS == 0) {
+                // Cada MAX_CLICS clics, se alterna entre mostrar y ocultar las contraseñas
+                pswContraseña.setVisible(!pswContraseña.isVisible());
+                txt_contraReve.setVisible(!txt_contraReve.isVisible());
+
+                if (pswContraseña.isVisible()) {
+                    pswContraseña.setText(txt_contraReve.getText());
+
+                } else {
+                    txt_contraReve.setText(pswContraseña.getText());
+
+                }
+
+                img_ojo.setImage(new Image(pswContraseña.isVisible() ? "/utilidades/abierto.png" : "/utilidades/cerrado.png"));
+            }
+        }
     }
 
 }
