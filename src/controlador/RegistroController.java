@@ -29,7 +29,9 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -145,6 +147,9 @@ public class RegistroController {
         txt_tele.textProperty().addListener(this::estanVacios);
         //Evento del botón registrarse
         btn_registro.setOnAction(this::registrarBotón);
+        //Evento de los botones de visualizar contraseña
+        btn_verContra.setOnMouseClicked(event -> revelarContra(event));
+        btn_verContra2.setOnMouseClicked(event -> revelarContraRepe(event));
         stage.setOnCloseRequest(this::cerrarVentana);
         stage.show();
     }
@@ -170,8 +175,71 @@ public class RegistroController {
         }
     }
 
-    private void registrarBotón(ActionEvent event) {
+    private void revelarContra(MouseEvent event) {
+        /*
+          Método para revelar y ocultar las contraseñas de la ventana del primer botón
+         */
+        int contadorClics = 0;
+        int MAX_CLICS = 1; // Número máximo de clics para alternar entre mostrar y ocultar contraseñas
 
+        if (event.getButton()
+                .equals(MouseButton.PRIMARY)) {
+            contadorClics++;
+            txt_contraReve.setDisable(false);
+            if (contadorClics % MAX_CLICS == 0) {
+                // Cada MAX_CLICS clics, se alterna entre mostrar y ocultar las contraseñas
+                psw_contra.setVisible(!psw_contra.isVisible());
+                txt_contraReve.setVisible(!txt_contraReve.isVisible());
+
+                if (psw_contra.isVisible()) {
+                    psw_contra.setText(txt_contraReve.getText());
+
+                } else {
+                    txt_contraReve.setText(psw_contra.getText());
+
+                }
+
+                img_ojo.setImage(new Image(psw_contra.isVisible() ? "/utilidades/abierto.png" : "/utilidades/cerrado.png"));
+            }
+        }
+
+    }
+
+    private void revelarContraRepe(MouseEvent event) {
+        /*
+          Método para revelar y ocultar las contraseñas de la ventana del segundo botón
+         */
+        int contadorClics = 0;
+        int MAX_CLICS = 1; // Número máximo de clics para alternar entre mostrar y ocultar contraseñas
+
+        if (event.getButton()
+                .equals(MouseButton.PRIMARY)) {
+            contadorClics++;
+            txt_contraRepeReve.setDisable(false);
+            if (contadorClics % MAX_CLICS == 0) {
+                // Cada MAX_CLICS clics, se alterna entre mostrar y ocultar las contraseñas
+                psw_contraRepe.setVisible(!psw_contraRepe.isVisible());
+                txt_contraRepeReve.setVisible(!txt_contraRepeReve.isVisible());
+
+                if (psw_contraRepe.isVisible()) {
+                    psw_contraRepe.setText(txt_contraRepeReve.getText());
+
+                } else {
+                    txt_contraRepeReve.setText(psw_contraRepe.getText());
+
+                }
+
+                img_ojo2.setImage(new Image(psw_contraRepe.isVisible() ? "/utilidades/abierto.png" : "/utilidades/cerrado.png"));
+            }
+        }
+
+    }
+
+    private void registrarBotón(ActionEvent event) {
+        /*
+          Método para Registrar al usuario en la base de datos del programa, realiza validaciones de patrones y otros
+          protocolos de seguridad
+         */
         try {
             //Comprobamos que el nombre no excede de 15 carácteres
             if (txt_nombre.getText().trim().length() > 15) {
@@ -207,24 +275,28 @@ public class RegistroController {
                 lbl_error, las excepciones genericas se mostraran en consola a través de un logger
              */
         } catch (IncorrectPatternException e) {
-            /*txt_nombre.setText("");
+            txt_nombre.setText("");
             txt_email.setText("");
             psw_contra.setText("");
             psw_contraRepe.setText("");
+            txt_contraRepeReve.setText("");
+            txt_contraReve.setText("");
             txt_direccion.setText("");
             txt_zip.setText("");
-            txt_tele.setText("");*/
+            txt_tele.setText("");
             txt_nombre.requestFocus();
             lbl_error.setVisible(true);
             lbl_error.setText(e.getMessage());
         } catch (PasswordDoesntMatchException e) {
-            /*txt_nombre.setText("");
+            txt_nombre.setText("");
             txt_email.setText("");
             psw_contra.setText("");
             psw_contraRepe.setText("");
+            txt_contraRepeReve.setText("");
+            txt_contraReve.setText("");
             txt_direccion.setText("");
             txt_zip.setText("");
-            txt_tele.setText("");*/
+            txt_tele.setText("");
             txt_nombre.requestFocus();
             lbl_error.setVisible(true);
             lbl_error.setText(e.getMessage());
