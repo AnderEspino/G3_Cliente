@@ -156,19 +156,23 @@ public class InicioSesionController {
         try {
             error.setText("");
             if (camposInformados() && maxCarecteres()) {
+                //Creamos el objeto user y lo instaciamos 
                 User user = new User();
+                //Añadimos el campo de email al usuario
                 user.setEmail(textEmail.getText());
+                 //Añadimos el campo de contraseña al usuario
                 user.setContraseña(pswContraseña.getText());
 
                 SocketFactory fac = new SocketFactory();
-
+                //Recogemos el socket
                 interf = fac.getSocket();
+                //Ejecutamos 
                 interf.excecuteLogin(user);
 
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/Usuario.fxml"));
 
                 Parent root = loader.load();
-
+                
                 UsuarioController controller = ((UsuarioController) loader.getController());
                 controller.setStage(stage);
                 controller.initStage(root);
@@ -195,7 +199,11 @@ public class InicioSesionController {
         }
 
     }
-
+    /**
+     * Mediante este metodo hacemos el set del escenario.
+     * @author Ander
+     * @param stage 
+     */
     public void setStage(Stage stage) {
         this.stage = stage;
     }
@@ -262,22 +270,15 @@ public class InicioSesionController {
      */
     private void handleLblCuentaClick() {
         try {
-
+            Stage ventanaActual = (Stage) lblCuenta.getScene().getWindow();
+            ventanaActual.close();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/Registro.fxml"));
             Parent root = loader.load();
 
             RegistroController registro = (RegistroController) loader.getController();
+            registro.setStage(stage);
             registro.initStage(root);
 
-            //Creamos el escenario para la nueva vista
-            Stage nuevaVista = new Stage();
-            //Creamos la escena para la nueva vista
-            Scene scene = new Scene(root);
-            nuevaVista.setScene(scene);
-            nuevaVista.show();
-
-            Stage ventanaActual = (Stage) lblCuenta.getScene().getWindow();
-            ventanaActual.close();
         } catch (IOException ex) {
             LOGGER.log(Level.SEVERE, "Error al cargar la nueva vista", ex);
         }
