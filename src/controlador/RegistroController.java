@@ -5,6 +5,7 @@
  */
 package controlador;
 
+import excepciones.ConnectException;
 import excepciones.IncorrectPatternException;
 import excepciones.PasswordDoesntMatchException;
 import javafx.event.Event;
@@ -36,6 +37,9 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import modelo.Sign;
+import modelo.SocketFactory;
+import modelo.User;
 
 /**
  * Esta clase funciona como el controlador de la ventana de Registro.
@@ -44,6 +48,7 @@ import javafx.stage.WindowEvent;
  */
 public class RegistroController {
 
+    private Sign interf;
     @FXML
     private Pane pane;
     @FXML
@@ -149,8 +154,7 @@ public class RegistroController {
         //Evento de los botones de visualizar contraseña
         btn_verContra.setOnMouseClicked(event -> revelarContra(event));
         btn_verContra2.setOnMouseClicked(event -> revelarContraRepe(event));
-        
-        
+
         stage.setOnCloseRequest(this::cerrarVentana);
         stage.show();
     }
@@ -162,9 +166,9 @@ public class RegistroController {
 
     private void tienesCuenta(MouseEvent event) {
         /**
-          Método para cargar la ventana de Inicio de sesión desde la ventana de Registro
-          usamos un try-catch para capturar errores, luego mediante el FXMLLoader cargamos la ventana de
-          InicioSesion.fxml
+         * Método para cargar la ventana de Inicio de sesión desde la ventana de
+         * Registro usamos un try-catch para capturar errores, luego mediante el
+         * FXMLLoader cargamos la ventana de InicioSesion.fxml
          */
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/InicioSesion.fxml"));
@@ -172,7 +176,7 @@ public class RegistroController {
             InicioSesionController signIn = ((InicioSesionController) loader.getController());
             signIn.setStage(stage);
             signIn.initStage(root);
-           
+
         } catch (IOException e) {
             LOGGER.info("Ha ocurrido un error");
         }
@@ -273,6 +277,26 @@ public class RegistroController {
             if (!(phoneMatcher.matcher(telefono).matches())) {
                 throw new IncorrectPatternException("El formato no está permitido, (ej, +34 643 567 453/ 945 564 234).");
             }
+
+            User user = new User();
+            //Añadimos el campo de email al usuario
+            user.setEmail(txt_email.getText());
+            //Añadimos el campo de contraseña al usuario
+            user.setContraseña(psw_contra.getText());
+            //Añadimos el campo contraseña repetida al usuario
+            user.setContraRepe(psw_contraRepe.getText());
+            //Añadimos el campo direccion a el usuario
+            user.setDireccion(txt_direccion.getText());
+            //Añadimos el campo telefono al usuario
+            user.setTelefono(Integer.parseInt(txt_tele.getText()));
+            //Añadimos el campo zip al usuario
+            user.setZip_code(Integer.parseInt(txt_zip.getText()));
+
+            SocketFactory fac = new SocketFactory();
+            //Recogemos el socket
+            interf = fac.getSocket();
+            //Ejecutamos 
+            interf.excecuteLogin(user);
             /*
                 Las excepciones de IncorrectPasswordException y IncorrectPatternException se mostrarán en el
                 lbl_error, las excepciones genericas se mostraran en consola a través de un logger
@@ -291,6 +315,19 @@ public class RegistroController {
             lbl_error.setVisible(true);
             lbl_error.setText(e.getMessage());
         } catch (PasswordDoesntMatchException e) {
+            txt_nombre.setText("");
+            txt_email.setText("");
+            psw_contra.setText("");
+            psw_contraRepe.setText("");
+            txt_contraRepeReve.setText("");
+            txt_contraReve.setText("");
+            txt_direccion.setText("");
+            txt_zip.setText("");
+            txt_tele.setText("");
+            txt_nombre.requestFocus();
+            lbl_error.setVisible(true);
+            lbl_error.setText(e.getMessage());
+        } catch (ConnectException e) {
             txt_nombre.setText("");
             txt_email.setText("");
             psw_contra.setText("");

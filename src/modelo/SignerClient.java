@@ -7,7 +7,6 @@ package modelo;
 
 import excepciones.IncorrectCredentialsException;
 import excepciones.UserAlreadyExistsException;
-import excepciones.UserDoesntExistsException;
 import excepciones.UserNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -26,9 +25,9 @@ import java.util.logging.Logger;
  */
 public class SignerClient implements Sign {
 
-    private static final ResourceBundle RETO1 = ResourceBundle.getBundle("modelo.Config");
-    private static final int PUERTO = Integer.parseInt(RETO1.getString("PORT"));
-    private static final String HOST = ResourceBundle.getBundle("modelo.Config").getString("IP");
+    private static final ResourceBundle archivo = ResourceBundle.getBundle("utilidades.Config");
+    private static final int PUERTO = Integer.parseInt(archivo.getString("PORT"));
+    private static final String HOST = ResourceBundle.getBundle("utilidades.Config").getString("IP");
     MessageType mt;
     private Message msg = null;
 

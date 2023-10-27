@@ -72,7 +72,7 @@ public class InicioSesionController {
     private static final String patronEmail = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
     private static final Pattern EMAIL_PATTERN = Pattern.compile(patronEmail);
     //Aqui asignamos el patron de la contraseña
-    private static final String PASSWORD_REGEX = "(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9]{8,}$";
+    private static final String PASSWORD_REGEX = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).+$";
     private static final Pattern PASSWORD__PATTERN = Pattern.compile(PASSWORD_REGEX);
 
     private static final Logger LOGGER = Logger.getLogger("/controlador/InicioSesionController");
@@ -167,8 +167,8 @@ public class InicioSesionController {
                 //Recogemos el socket
                 interf = fac.getSocket();
                 //Ejecutamos 
-                interf.excecuteLogin(user);
-
+                interf.executeSignIn(user);
+                
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/Usuario.fxml"));
 
                 Parent root = loader.load();
@@ -255,7 +255,7 @@ public class InicioSesionController {
         } else if (!PASSWORD__PATTERN.matcher(pswContraseña.getText()).matches()) {
             //Hacemos que el lbl error se vea
             error.setVisible(true);
-            error.setText("La contraseña debe de contener al menos 6 caracteres, una mayuscula y minuscula");
+            error.setText("La contraseña debe de contener al menos 8 caracteres, una mayuscula y minuscula");
             return false;
         } else {
             return true;
