@@ -12,16 +12,13 @@ import javafx.event.Event;
 import javafx.event.ActionEvent;
 import javafx.scene.input.MouseEvent;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -34,9 +31,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import modelo.Sign;
 import modelo.SocketFactory;
 import modelo.User;
@@ -47,7 +42,7 @@ import modelo.User;
  * @author Diego, Adrian
  */
 public class RegistroController {
-
+    
     private Sign interf;
     @FXML
     private Pane pane;
@@ -100,20 +95,21 @@ public class RegistroController {
     @FXML
     private PasswordField psw_contraRepe;
     private Stage stage;
-
+    
     private String email, contraseña, zip, telefono, nombre;
-
+    //Patron del zip
     private static final String patronZip = "^\\d{5}$";
     private static final Pattern zipMatcher = Pattern.compile(patronZip);
-
+    //Patron del numero de telefono
     private static final String patronPhone = "^(\\+34|0034|34)?[6|7|9][0-9]{8}$";
     private static final Pattern phoneMatcher = Pattern.compile(patronPhone);
-
+    //Patron de la contraseña 
     private static final String patronContraseña = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).+$";
     private static final Pattern passwordMatcher = Pattern.compile(patronContraseña);
-
+    //Patron del email
     private static final String patronEmail = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
     private static final Pattern emailMatcher = Pattern.compile(patronEmail);
+    
     protected static final Logger LOGGER = Logger.getLogger("/controlador/RegistroController");
 
     /**
@@ -154,7 +150,7 @@ public class RegistroController {
         //Evento de los botones de visualizar contraseña
         btn_verContra.setOnMouseClicked(event -> revelarContra(event));
         btn_verContra2.setOnMouseClicked(event -> revelarContraRepe(event));
-
+        
         stage.setOnCloseRequest(this::cerrarVentana);
         stage.show();
     }
@@ -163,7 +159,7 @@ public class RegistroController {
     public void setStage(Stage stage) {
         this.stage = stage;
     }
-
+    
     private void tienesCuenta(MouseEvent event) {
         /**
          * Método para cargar la ventana de Inicio de sesión desde la ventana de
@@ -176,12 +172,12 @@ public class RegistroController {
             InicioSesionController signIn = ((InicioSesionController) loader.getController());
             signIn.setStage(stage);
             signIn.initStage(root);
-
+            
         } catch (IOException e) {
             LOGGER.info("Ha ocurrido un error");
         }
     }
-
+    
     private void revelarContra(MouseEvent event) {
         /*
           Método para revelar y ocultar las contraseñas de la ventana del primer botón
@@ -197,21 +193,21 @@ public class RegistroController {
                 // Cada MAX_CLICS clics, se alterna entre mostrar y ocultar las contraseñas
                 psw_contra.setVisible(!psw_contra.isVisible());
                 txt_contraReve.setVisible(!txt_contraReve.isVisible());
-
+                
                 if (psw_contra.isVisible()) {
                     psw_contra.setText(txt_contraReve.getText());
-
+                    
                 } else {
                     txt_contraReve.setText(psw_contra.getText());
-
+                    
                 }
-
+                
                 img_ojo.setImage(new Image(psw_contra.isVisible() ? "/utilidades/abierto.png" : "/utilidades/cerrado.png"));
             }
         }
-
+        
     }
-
+    
     private void revelarContraRepe(MouseEvent event) {
         /*
           Método para revelar y ocultar las contraseñas de la ventana del segundo botón
@@ -227,21 +223,21 @@ public class RegistroController {
                 // Cada MAX_CLICS clics, se alterna entre mostrar y ocultar las contraseñas
                 psw_contraRepe.setVisible(!psw_contraRepe.isVisible());
                 txt_contraRepeReve.setVisible(!txt_contraRepeReve.isVisible());
-
+                
                 if (psw_contraRepe.isVisible()) {
                     psw_contraRepe.setText(txt_contraRepeReve.getText());
-
+                    
                 } else {
                     txt_contraRepeReve.setText(psw_contraRepe.getText());
-
+                    
                 }
-
+                
                 img_ojo2.setImage(new Image(psw_contraRepe.isVisible() ? "/utilidades/abierto.png" : "/utilidades/cerrado.png"));
             }
         }
-
+        
     }
-
+    
     private void registrarBotón(ActionEvent event) {
         /*
           Método para Registrar al usuario en la base de datos del programa, realiza validaciones de patrones y otros
@@ -251,7 +247,7 @@ public class RegistroController {
             //Comprobamos que el nombre no excede de 15 carácteres
             if (txt_nombre.getText().trim().length() > 15) {
                 throw new IncorrectPatternException("El nombre de usuario es demasiado largo.");
-
+                
             }
             //Comprobamos el formato del correo y si no excecde de 40 carácteres
             email = txt_email.getText();
@@ -277,21 +273,28 @@ public class RegistroController {
             if (!(phoneMatcher.matcher(telefono).matches())) {
                 throw new IncorrectPatternException("El formato no está permitido, (ej, +34 643 567 453/ 945 564 234).");
             }
-
+            
             User user = new User();
             //Añadimos el campo de email al usuario
             user.setEmail(txt_email.getText());
             //Añadimos el campo de contraseña al usuario
             user.setContraseña(psw_contra.getText());
-            //Añadimos el campo contraseña repetida al usuario
-            user.setContraRepe(psw_contraRepe.getText());
+
             //Añadimos el campo direccion a el usuario
             user.setDireccion(txt_direccion.getText());
             //Añadimos el campo telefono al usuario
             user.setTelefono(Integer.parseInt(txt_tele.getText()));
             //Añadimos el campo zip al usuario
             user.setZip_code(Integer.parseInt(txt_zip.getText()));
-
+            //Añadimos el campo compañia al usuario
+            user.setCompañia(user.getCompañia());
+            //Añadimos el campo activo al usuario
+            user.setActivo(user.isActivo());
+            //Añadimos el campo fecha inicio al usuario
+            user.setFecha_ini(user.getFecha_ini());
+            //Añadimos el campo privilegio al usuario
+            user.setPrivilege(user.getPrivilege());
+           
             SocketFactory fac = new SocketFactory();
             //Recogemos el socket
             interf = fac.getSocket();
@@ -346,9 +349,9 @@ public class RegistroController {
             lbl_error.setText("Ha ocurrido un error inesperado");
             LOGGER.info(e.getMessage());
         }
-
+        
     }
-
+    
     private void estanVacios(ObservableValue observable, Object oldValue, Object newValue) {
         /*
            Comprueban que los campos de texto no están vacios, si lo están el botón estará deshabilitado
@@ -372,7 +375,7 @@ public class RegistroController {
             lbl_error.setVisible(false);
         }
     }
-
+    
     private void cerrarVentana(Event event) {
         /*
             Método para cerrar la ventana desde el botón X

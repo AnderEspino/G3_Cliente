@@ -7,6 +7,7 @@ package modelo;
 
 import excepciones.IncorrectCredentialsException;
 import excepciones.UserAlreadyExistsException;
+import excepciones.UserDoesntExistsException;
 import excepciones.UserNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -33,13 +34,14 @@ public class SignerClient implements Sign {
 
     @Override
     public User excecuteLogin(User user) throws excepciones.ConnectException, UserAlreadyExistsException {
-        MessageType mst;
+       
         ObjectOutputStream oos = null;
         ObjectInputStream ois = null;
 
         try {
             //Enviamos el objecto encapsulado al servidor
             Socket socketCliente = new Socket(HOST, PUERTO);
+            ois = new ObjectInputStream(socketCliente.getInputStream());
             oos = new ObjectOutputStream(socketCliente.getOutputStream());
             msg = new Message();
             msg.setUser(user);
@@ -47,11 +49,9 @@ public class SignerClient implements Sign {
             oos.writeObject(msg);
 
             //Recibimos el objeto encapsulado del servidor
-            ois = new ObjectInputStream(socketCliente.getInputStream());
             msg = (Message) ois.readObject();
             user = msg.getUser();
-            //Declaramos una variable int, pues las enumeraciones devuelven valores int
-            int decision = msg.getMsg().ordinal();
+           
             oos.close();
             ois.close();
             socketCliente.close();
@@ -104,7 +104,7 @@ public class SignerClient implements Sign {
             ois = new ObjectInputStream(socketCliente.getInputStream());
             msg = (Message) ois.readObject();
             user = msg.getUser();
-            int decision = msg.getMsg().ordinal();
+           
             oos.close();
             ois.close();
             socketCliente.close();

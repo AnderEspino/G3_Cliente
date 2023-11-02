@@ -4,9 +4,8 @@
  */
 package controlador;
 
-import excepciones.IncorrectCredentialsException;
-import excepciones.PasswordDoesntMatchException;
 import excepciones.UserDoesntExistsException;
+import excepciones.UserNotFoundException;
 import javafx.event.ActionEvent;
 import java.io.IOException;
 import java.net.ConnectException;
@@ -30,7 +29,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import modelo.Sign;
@@ -45,6 +43,7 @@ import modelo.User;
 public class InicioSesionController {
 
     private Sign interf;
+    @FXML
     private Stage stage;
     @FXML
     private Label lbl_Inicio;
@@ -156,53 +155,56 @@ public class InicioSesionController {
         try {
             error.setText("");
             if (camposInformados() && maxCarecteres()) {
-                //Creamos el objeto user y lo instaciamos 
+                //Creamos el objeto user y lo instaciamos
                 User user = new User();
                 //Añadimos el campo de email al usuario
                 user.setEmail(textEmail.getText());
-                 //Añadimos el campo de contraseña al usuario
+                //Añadimos el campo de contraseña al usuario
                 user.setContraseña(pswContraseña.getText());
 
                 SocketFactory fac = new SocketFactory();
                 //Recogemos el socket
                 interf = fac.getSocket();
-                //Ejecutamos 
+                //Ejecutamos
                 interf.executeSignIn(user);
-                
+               
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/Usuario.fxml"));
 
                 Parent root = loader.load();
-                
+
                 UsuarioController controller = ((UsuarioController) loader.getController());
                 controller.setStage(stage);
-                controller.initStage(root);
+                controller.initStage(root, user);
+
+                //Si el usuario es nulo se lanza la siguiente excepcion
+                if (user == null) {
+                    throw new UserDoesntExistsException("El usuario no se ha encontrado");
+                }
+                //Si la factoria es nula, lanzamos la siguiente excepcion
+                if (fac == null) {
+                    throw new ConnectException("Error de conexion con el servidor");
+                }
+                if (!maxCarecteres()) {
+                    throw new excepciones.IncorrectPatternException("El patron del email o contraseña incorrectos");
+                }
 
             }
-
+        } catch (UserNotFoundException ex) {
+            error.setText("El usuario no se ha encontrado");
+        } catch (excepciones.ConnectException ex) {
+            error.setText("Error de conexion con el servidor");
+        } catch (IOException ex) {
+            Logger.getLogger(InicioSesionController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
-            //Hacemos que el lbl error se vea
-            error.setVisible(true);
-            // Manejo de excepciones
-            LOGGER.log(Level.SEVERE, "Error durante el inicio de sesión", ex);
-            error.setDisable(false);
-            if (ex instanceof IncorrectCredentialsException) {
-                error.setText("Email o contraseña incorrectos!");
-            } else if (ex instanceof UserDoesntExistsException) {
-                error.setText("El usuario no existe.");
-            } else if (ex instanceof PasswordDoesntMatchException) {
-                error.setText("La contraseña no coincide.");
-            } else if (ex instanceof ConnectException) {
-                error.setText("El servidor es inaccesible.");
-            } else {
-                error.setText("Ocurrió un error desconocido durante el inicio de sesión.");
-            }
+            error.setText("Ha habido algun error durante el inicio de sesion");
         }
-
     }
+
     /**
      * Mediante este metodo hacemos el set del escenario.
+     *
      * @author Ander
-     * @param stage 
+     * @param stage
      */
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -214,6 +216,7 @@ public class InicioSesionController {
      * @return boolean
      */
     private boolean camposInformados() {
+
         //Validamos que el campo email no esta vacio
         if (textEmail.getText().trim().isEmpty()) {
             //Deshabilitamos el boton de inicio de sesion
@@ -255,7 +258,7 @@ public class InicioSesionController {
         } else if (!PASSWORD__PATTERN.matcher(pswContraseña.getText()).matches()) {
             //Hacemos que el lbl error se vea
             error.setVisible(true);
-            error.setText("La contraseña debe de contener al menos 8 caracteres, una mayuscula y minuscula");
+            error.setText("La contraseña debe de contener al menos 8 caracteres, un numero, una mayuscula y minuscula");
             return false;
         } else {
             return true;
