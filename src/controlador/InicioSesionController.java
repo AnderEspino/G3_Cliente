@@ -4,8 +4,9 @@
  */
 package controlador;
 
+import excepciones.IncorrectCredentialsException;
+import excepciones.PasswordDoesntMatchException;
 import excepciones.UserDoesntExistsException;
-import excepciones.UserNotFoundException;
 import javafx.event.ActionEvent;
 import java.io.IOException;
 import java.net.ConnectException;
@@ -29,6 +30,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import modelo.Sign;
@@ -43,8 +45,9 @@ import modelo.User;
 public class InicioSesionController {
 
     private Sign interf;
-    @FXML
+
     private Stage stage;
+
     @FXML
     private Label lbl_Inicio;
     @FXML
@@ -155,49 +158,40 @@ public class InicioSesionController {
         try {
             error.setText("");
             if (camposInformados() && maxCarecteres()) {
-                //Creamos el objeto user y lo instaciamos
                 User user = new User();
-                //Añadimos el campo de email al usuario
                 user.setEmail(textEmail.getText());
-                //Añadimos el campo de contraseña al usuario
                 user.setContraseña(pswContraseña.getText());
 
                 SocketFactory fac = new SocketFactory();
                 //Recogemos el socket
                 interf = fac.getSocket();
                 //Ejecutamos
-                interf.executeSignIn(user);
-               
+                User u = new User();
+                u = interf.executeSignIn(user);
+
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/Usuario.fxml"));
 
                 Parent root = loader.load();
 
                 UsuarioController controller = ((UsuarioController) loader.getController());
                 controller.setStage(stage);
-                controller.initStage(root, user);
-
-                //Si el usuario es nulo se lanza la siguiente excepcion
-                if (user == null) {
-                    throw new UserDoesntExistsException("El usuario no se ha encontrado");
-                }
-                //Si la factoria es nula, lanzamos la siguiente excepcion
-                if (fac == null) {
-                    throw new ConnectException("Error de conexion con el servidor");
-                }
-                if (!maxCarecteres()) {
-                    throw new excepciones.IncorrectPatternException("El patron del email o contraseña incorrectos");
-                }
+                controller.initStage(root, u);
 
             }
-        } catch (UserNotFoundException ex) {
-            error.setText("El usuario no se ha encontrado");
+
         } catch (excepciones.ConnectException ex) {
-            error.setText("Error de conexion con el servidor");
+            error.setVisible(true);
+            error.setText("Error de conexion con el servidor.");
+        } catch (IncorrectCredentialsException ex) {
+            error.setVisible(true);
+            error.setText("Email o contraseña incorrectos.");
         } catch (IOException ex) {
             Logger.getLogger(InicioSesionController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
-            error.setText("Ha habido algun error durante el inicio de sesion");
+            error.setVisible(true);
+            error.setText("Ha habido algun error durante el inicio de sesion.");
         }
+
     }
 
     /**
@@ -216,7 +210,6 @@ public class InicioSesionController {
      * @return boolean
      */
     private boolean camposInformados() {
-
         //Validamos que el campo email no esta vacio
         if (textEmail.getText().trim().isEmpty()) {
             //Deshabilitamos el boton de inicio de sesion
@@ -244,7 +237,7 @@ public class InicioSesionController {
      * @return boolean
      */
     private boolean maxCarecteres() {
-        //Comprobamos que el campo de email no contiene más de 40 caracteres 
+        //Comprobamos que el campo de email no contiene más de 40 caracteres
         if (textEmail.getText().trim().length() >= 40) {
             //Hacemos que el lbl error se vea
             error.setVisible(true);
@@ -258,7 +251,7 @@ public class InicioSesionController {
         } else if (!PASSWORD__PATTERN.matcher(pswContraseña.getText()).matches()) {
             //Hacemos que el lbl error se vea
             error.setVisible(true);
-            error.setText("La contraseña debe de contener al menos 8 caracteres, un numero, una mayuscula y minuscula");
+            error.setText("La contraseña debe de contener al menos 8 caracteres, una mayuscula y minuscula");
             return false;
         } else {
             return true;
@@ -295,7 +288,7 @@ public class InicioSesionController {
      * @param event
      */
     private void handleCloseRequest(WindowEvent event) {
-        //Creamos un nuevo objeto Alerta 
+        //Creamos un nuevo objeto Alerta
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setHeaderText(null);
         alert.setTitle("EXIT");

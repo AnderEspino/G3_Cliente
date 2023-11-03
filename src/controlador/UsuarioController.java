@@ -7,13 +7,16 @@ package controlador;
 
 import static controlador.RegistroController.LOGGER;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -58,37 +61,30 @@ public class UsuarioController {
      *
      * @author Ander, Diego
      * @param root
+     * @param usuario
      */
-    public void initStage(Parent root, User user) {
+    public void initStage(Parent root, User usuario) {
         LOGGER.info("Iniciando Sesion");
         Scene scene = new Scene(root);
-        
+        stage.setScene(scene);
         stage.setTitle("Usuario");
         //El campo de usuario está deshabilitado.
         lbl_usuario.setDisable(true);
         //El campo de email está deshabilitado.
         lbl_email.setDisable(true);
-        //La imagen está deshabilitada.
-        img_Perfil.setDisable(true);
         //El campo saludo esta deshabilitado.
         lbl_Saludo.setDisable(true);
         //El boton cerrar sesion esta habilitado.
         btn_CerrarSesion.setDisable(false);
         //Mediante esta accion llamamos al metodo cerrarSesion.
         btn_CerrarSesion.setOnAction(this::cerrarSesion);
-        //Añadimos la imagen de perfil
-        Image image = new Image("/utilidades/perfil.png");
-        img_Perfil.setImage(image);
-        
-        stage.setScene(scene);
-        
-        
-        lbl_email.setText(user.getEmail());
-        lbl_usuario.setText(user.getNombre().toUpperCase());
-        lbl_Saludo.setText("HOLA " + user.getNombre());
-         
+        img_Perfil.setImage(new Image("/utilidades/perfil.png"));
+
+        lbl_email.setText(usuario.getEmail());
+
+        lbl_usuario.setText(usuario.getNombre());
+        lbl_Saludo.setText("Hola " + usuario.getNombre());
         stage.setOnCloseRequest(this::handleCloseRequest);
-      
         stage.show();
     }
 
@@ -104,7 +100,7 @@ public class UsuarioController {
      * @param event
      */
     private void handleCloseRequest(WindowEvent event) {
-        //Creamos un nuevo objeto Alerta 
+        //Creamos un nuevo objeto Alerta
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setHeaderText(null);
         alert.setTitle("EXIT");
@@ -128,7 +124,7 @@ public class UsuarioController {
      */
     public void cerrarSesion(ActionEvent event) {
         try {
-            //Creamos un nuevo objeto Alerta 
+            //Creamos un nuevo objeto Alerta
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setHeaderText(null);
             alert.setTitle("Cerrar Sesion");
@@ -167,3 +163,5 @@ public class UsuarioController {
         this.user = user;
     }
 }
+
+

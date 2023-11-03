@@ -38,7 +38,7 @@
          </font></Label>
       <TextField fx:id="txt_nombre" layoutX="389.0" layoutY="102.0" style="-fx-border-color: blue;" />
       <TextField fx:id="txt_email" layoutX="389.0" layoutY="142.0" style="-fx-border-color: blue;" />
-      <Label fx:id="lbl_hyperlinkCuenta" layoutX="245.0" layoutY="402.0" style="-: #3DA9A1;" text="¿Tienes ya una cuenta?" textAlignment="JUSTIFY" textFill="#3da9a1">
+      <Label id="lbl_hyperlinkCuenta" fx:id="lbl_hyperlinkCuenta" layoutX="245.0" layoutY="402.0" style="-: #3DA9A1;" text="¿Tienes ya una cuenta?" textAlignment="JUSTIFY" textFill="#3da9a1">
          <font>
             <Font name="Lucida Sans Demibold" size="16.0" />
          </font></Label>
