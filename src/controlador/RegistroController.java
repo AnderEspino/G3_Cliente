@@ -8,20 +8,18 @@ package controlador;
 import excepciones.ConnectException;
 import excepciones.IncorrectPatternException;
 import excepciones.PasswordDoesntMatchException;
+import excepciones.UserAlreadyExistsException;
 import javafx.event.Event;
 import javafx.event.ActionEvent;
 import javafx.scene.input.MouseEvent;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -30,13 +28,12 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import modelo.Sign;
 import modelo.SocketFactory;
 import modelo.User;
@@ -120,6 +117,7 @@ public class RegistroController {
      * Initializes the controller class.
      */
     public void initStage(Parent root) {
+        LOGGER.info("Iniciando la ventana de Registro");
         Scene scene = new Scene(root);
         stage.setScene(scene);
         //La ventana no es redimensionable
@@ -151,8 +149,11 @@ public class RegistroController {
         txt_tele.textProperty().addListener(this::estanVacios);
         //Evento del botón registrarse
         btn_registro.setOnAction(this::registrarBotón);
+        btn_registro.setTooltip(new Tooltip("Pulsa para registrarte"));
         //Evento de los botones de visualizar contraseña
         btn_verContra.setOnMouseClicked(event -> revelarContra(event));
+        btn_verContra.setTooltip(new Tooltip("Visualizar/Ocultar contraseña"));
+        btn_verContra2.setTooltip(new Tooltip("Visualizar/Ocultar contraseña"));
         btn_verContra2.setOnMouseClicked(event -> revelarContraRepe(event));
 
         stage.setOnCloseRequest(this::cerrarVentana);
@@ -250,31 +251,39 @@ public class RegistroController {
         try {
             //Comprobamos que el nombre no excede de 15 carácteres
             if (txt_nombre.getText().trim().length() > 15) {
+                txt_nombre.setText("");
                 throw new IncorrectPatternException("El nombre de usuario es demasiado largo.");
 
             }
             //Comprobamos el formato del correo y si no excecde de 40 carácteres
             email = txt_email.getText();
             if (!emailMatcher.matcher(email).matches() || email.length() > 40) {
+                txt_email.setText("");
                 throw new IncorrectPatternException("El formato no está permitido (ej, xxx@xxx.xxx) y no debe tener mas de 40 caracteres.");
             }
             //Comprobamos que la contraseña se alfanumerica, tenga mayúsculas, minúsculas y tenga más de 8 carácteres
             contraseña = psw_contra.getText();
             if (!(passwordMatcher.matcher(contraseña).matches()) || contraseña.length() < 8) {
+                psw_contra.setText("");
+                txt_contraReve.setText("");
                 throw new IncorrectPatternException("Formato erroneo, introduce más 8 carácteres alfanuméricos"
                         + " añade una minuscula o mayúscula al menos.");
                 //Comprobamos que las contraseñas coinciden
             } else if (!psw_contra.getText().equals(psw_contraRepe.getText())) {
+                psw_contraRepe.setText("");
+                txt_contraRepeReve.setText("");
                 throw new PasswordDoesntMatchException("Las contraseñas no coinciden.");
             }
             //Comprobamos que el código postal tenga un formato de 5 digitos
             zip = txt_zip.getText();
             if (!(zipMatcher.matcher(zip).matches())) {
+                txt_zip.setText("");
                 throw new IncorrectPatternException("El formato no está permitido, (ej, 45320).");
             }
             //Comprobamos que el teléfono tiene el patrón estándar español de 9 digitos
             telefono = "+34" + txt_tele.getText();
             if (!(phoneMatcher.matcher(telefono).matches())) {
+                txt_tele.setText("");
                 throw new IncorrectPatternException("El formato no está permitido, (ej, +34 643 567 453/ 945 564 234).");
             }
             /*
@@ -282,69 +291,91 @@ public class RegistroController {
                 lbl_error, las excepciones genericas se mostraran en consola a través de un logger
              */
             User user = new User();
+            //Añadimos el nombre al campo nombre del usuario
+            user.setNombre(txt_nombre.getText());
             //Añadimos el campo de email al usuario
             user.setEmail(txt_email.getText());
             //Añadimos el campo de contraseña al usuario
             user.setContraseña(psw_contra.getText());
-
-            user.setContraRepe(psw_contraRepe.getText());
-
+            //Añadimos el campo de la dirección al usuario
             user.setDireccion(txt_direccion.getText());
-
+            //Añadimos el campo del telefono al usuario
             user.setTelefono(Integer.parseInt(txt_tele.getText()));
-
+            //Añadimos el campo del código zip al usuario
             user.setZip_code(Integer.parseInt(txt_zip.getText()));
 
+            //Añadimos los campos con valores predeterminados
+            user.setCompañia(user.getCompañia());
+            user.setActivo(user.isActivo());
+            user.setFecha_ini(user.getFecha_ini());
+            user.setPrivilege(user.getPrivilege());
+
+            //LLmamos a la factoria, la cual tiene una instancia de la interfaz
             SocketFactory fac = new SocketFactory();
             //Recogemos el socket
             interf = fac.getSocket();
-            //Ejecutamos
+            //Ejecutamos el método correspondiente
             interf.excecuteLogin(user);
 
+            //Mostramos al usuario que el registro ha sido satisfactorio
+            Alert ventana = new Alert(Alert.AlertType.INFORMATION);
+            ventana.setHeaderText(null);
+            ventana.setTitle("Enhorabuena");
+            ventana.setContentText("Has logrado registrarte");
+            Optional<ButtonType> accion = ventana.showAndWait();
+            if (accion.get() == ButtonType.OK) {
+                txt_nombre.setText("");
+                txt_email.setText("");
+                psw_contra.setText("");
+                psw_contraRepe.setText("");
+                txt_contraReve.setText("");
+                txt_contraRepeReve.setText("");
+                txt_direccion.setText("");
+                txt_zip.setText("");
+                txt_tele.setText("");
+                lbl_error.setText("");
+                txt_nombre.requestFocus();
+                event.consume();
+            } else {
+                txt_nombre.setText("");
+                txt_email.setText("");
+                psw_contra.setText("");
+                psw_contraRepe.setText("");
+                txt_contraReve.setText("");
+                txt_contraRepeReve.setText("");
+                txt_direccion.setText("");
+                txt_zip.setText("");
+                txt_tele.setText("");
+                lbl_error.setText("");
+                txt_nombre.requestFocus();
+                event.consume();
+            }
+
         } catch (IncorrectPatternException e) {
-            txt_nombre.setText("");
-            txt_email.setText("");
-            psw_contra.setText("");
-            psw_contraRepe.setText("");
-            txt_contraRepeReve.setText("");
-            txt_contraReve.setText("");
-            txt_direccion.setText("");
-            txt_zip.setText("");
-            txt_tele.setText("");
             txt_nombre.requestFocus();
             lbl_error.setVisible(true);
             lbl_error.setText(e.getMessage());
+            LOGGER.severe(e.getMessage());
         } catch (PasswordDoesntMatchException e) {
-            txt_nombre.setText("");
-            txt_email.setText("");
-            psw_contra.setText("");
-            psw_contraRepe.setText("");
-            txt_contraRepeReve.setText("");
-            txt_contraReve.setText("");
-            txt_direccion.setText("");
-            txt_zip.setText("");
-            txt_tele.setText("");
             txt_nombre.requestFocus();
             lbl_error.setVisible(true);
             lbl_error.setText(e.getMessage());
+            LOGGER.severe(e.getMessage());
+        } catch (UserAlreadyExistsException e) {
+            txt_nombre.requestFocus();
+            lbl_error.setVisible(true);
+            lbl_error.setText(e.getMessage());
+            LOGGER.severe(e.getMessage());
         } catch (ConnectException e) {
-            txt_nombre.setText("");
-            txt_email.setText("");
-            psw_contra.setText("");
-            psw_contraRepe.setText("");
-            txt_contraRepeReve.setText("");
-            txt_contraReve.setText("");
-            txt_direccion.setText("");
-            txt_zip.setText("");
-            txt_tele.setText("");
             txt_nombre.requestFocus();
             lbl_error.setVisible(true);
             lbl_error.setText(e.getMessage());
+            LOGGER.severe(e.getMessage());
         } catch (Exception e) {
             txt_nombre.requestFocus();
             lbl_error.setVisible(true);
             lbl_error.setText("Ha ocurrido un error inesperado");
-            LOGGER.info(e.getMessage());
+            LOGGER.severe(e.getMessage());
         }
 
     }

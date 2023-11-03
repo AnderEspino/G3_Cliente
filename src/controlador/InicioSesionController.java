@@ -45,7 +45,9 @@ import modelo.User;
 public class InicioSesionController {
 
     private Sign interf;
+
     private Stage stage;
+
     @FXML
     private Label lbl_Inicio;
     @FXML
@@ -156,18 +158,16 @@ public class InicioSesionController {
         try {
             error.setText("");
             if (camposInformados() && maxCarecteres()) {
-                //Creamos el objeto user y lo instaciamos
                 User user = new User();
-                //Añadimos el campo de email al usuario
                 user.setEmail(textEmail.getText());
-                //Añadimos el campo de contraseña al usuario
                 user.setContraseña(pswContraseña.getText());
 
                 SocketFactory fac = new SocketFactory();
                 //Recogemos el socket
                 interf = fac.getSocket();
                 //Ejecutamos
-                interf.executeSignIn(user);
+                User u = new User();
+                u = interf.executeSignIn(user);
 
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/Usuario.fxml"));
 
@@ -175,27 +175,21 @@ public class InicioSesionController {
 
                 UsuarioController controller = ((UsuarioController) loader.getController());
                 controller.setStage(stage);
-                controller.initStage(root);
+                controller.initStage(root, u);
 
             }
 
-        } catch (Exception ex) {
-            //Hacemos que el lbl error se vea
+        } catch (excepciones.ConnectException ex) {
             error.setVisible(true);
-            // Manejo de excepciones
-            LOGGER.log(Level.SEVERE, "Error durante el inicio de sesión", ex);
-            error.setDisable(false);
-            if (ex instanceof IncorrectCredentialsException) {
-                error.setText("Email o contraseña incorrectos!");
-            } else if (ex instanceof UserDoesntExistsException) {
-                error.setText("El usuario no existe.");
-            } else if (ex instanceof PasswordDoesntMatchException) {
-                error.setText("La contraseña no coincide.");
-            } else if (ex instanceof ConnectException) {
-                error.setText("El servidor es inaccesible.");
-            } else {
-                error.setText("Ocurrió un error desconocido durante el inicio de sesión.");
-            }
+            error.setText("Error de conexion con el servidor.");
+        } catch (IncorrectCredentialsException ex) {
+            error.setVisible(true);
+            error.setText("Email o contraseña incorrectos.");
+        } catch (IOException ex) {
+            Logger.getLogger(InicioSesionController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            error.setVisible(true);
+            error.setText("Ha habido algun error durante el inicio de sesion.");
         }
 
     }

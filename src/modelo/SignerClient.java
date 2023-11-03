@@ -8,7 +8,6 @@ package modelo;
 import excepciones.IncorrectCredentialsException;
 import excepciones.UserAlreadyExistsException;
 import excepciones.UserDoesntExistsException;
-import excepciones.UserNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -34,13 +33,15 @@ public class SignerClient implements Sign {
 
     @Override
     public User excecuteLogin(User user) throws excepciones.ConnectException, UserAlreadyExistsException {
-        MessageType mst;
         ObjectOutputStream oos = null;
         ObjectInputStream ois = null;
 
         try {
             //Enviamos el objecto encapsulado al servidor
+
             Socket socketCliente = new Socket(HOST, PUERTO);
+            System.out.println("Conexión con el servidor establecida");
+
             oos = new ObjectOutputStream(socketCliente.getOutputStream());
             msg = new Message();
             msg.setUser(user);
@@ -51,10 +52,9 @@ public class SignerClient implements Sign {
             ois = new ObjectInputStream(socketCliente.getInputStream());
             msg = (Message) ois.readObject();
             user = msg.getUser();
-            //Declaramos una variable int, pues las enumeraciones devuelven valores int
-            int decision = msg.getMsg().ordinal();
+
             oos.close();
-            ois.close();
+
             socketCliente.close();
             //Dependiendo de el mensaje que reciva lanza o escribe un mensaje nuevo
             switch (msg.getMsg()) {
@@ -88,13 +88,15 @@ public class SignerClient implements Sign {
      * @return usuario
      */
     @Override
-    public User executeSignIn(User user) throws excepciones.UserNotFoundException, excepciones.ConnectException {
+    public User executeSignIn(User user) throws excepciones.ConnectException, IncorrectCredentialsException {
         ObjectOutputStream oos = null;
         ObjectInputStream ois = null;
 
         try {
             //Enviamos el objecto encapsulado al servidor
             Socket socketCliente = new Socket(HOST, PUERTO);
+            System.out.println("Conexión con el servidor establecida");
+
             oos = new ObjectOutputStream(socketCliente.getOutputStream());
             msg = new Message();
             msg.setUser(user);
@@ -105,7 +107,6 @@ public class SignerClient implements Sign {
             ois = new ObjectInputStream(socketCliente.getInputStream());
             msg = (Message) ois.readObject();
             user = msg.getUser();
-            int decision = msg.getMsg().ordinal();
             oos.close();
             ois.close();
             socketCliente.close();
@@ -113,10 +114,10 @@ public class SignerClient implements Sign {
             switch (msg.getMsg()) {
                 case OK_RESPONSE:
                     return user;
-                case USER_NOT_FOUND_RESPONSE:
-                    throw new UserNotFoundException("El usuario no se ha encontrado");
+                case INCORRECT_CREDENTIALS_RESPONSE:
+                    throw new IncorrectCredentialsException("Email o contraseña incorrectos.");
                 case ERROR_RESPONSE:
-                    throw new ConnectException("Ha ocurrido un error en el servidor");
+                    throw new ConnectException("Ha ocurrido un error en el servidor.");
 
             }
 

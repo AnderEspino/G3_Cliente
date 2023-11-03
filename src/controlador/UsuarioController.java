@@ -23,6 +23,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -50,7 +51,7 @@ public class UsuarioController {
     private Label lbl_usuario;
     @FXML
     private Label lbl_email;
-
+    @FXML
     private Stage stage;
 
     private User user;
@@ -60,28 +61,29 @@ public class UsuarioController {
      *
      * @author Ander, Diego
      * @param root
+     * @param usuario
      */
-    public void initStage(Parent root) {
+    public void initStage(Parent root, User usuario) {
         LOGGER.info("Iniciando Sesion");
         Scene scene = new Scene(root);
-
+        stage.setScene(scene);
+        stage.setTitle("Usuario");
         //El campo de usuario está deshabilitado.
         lbl_usuario.setDisable(true);
         //El campo de email está deshabilitado.
         lbl_email.setDisable(true);
-        //La imagen está deshabilitada.
-        img_Perfil.setDisable(true);
         //El campo saludo esta deshabilitado.
         lbl_Saludo.setDisable(true);
         //El boton cerrar sesion esta habilitado.
         btn_CerrarSesion.setDisable(false);
         //Mediante esta accion llamamos al metodo cerrarSesion.
         btn_CerrarSesion.setOnAction(this::cerrarSesion);
+        img_Perfil.setImage(new Image("/utilidades/perfil.png"));
 
-        //
-        lbl_email.setText(user.getEmail());
-        lbl_usuario.setText(user.getNombre().toUpperCase());
-        lbl_Saludo.setText("HOLA " + user.getNombre());
+        lbl_email.setText(usuario.getEmail());
+
+        lbl_usuario.setText(usuario.getNombre());
+        lbl_Saludo.setText("Hola " + usuario.getNombre());
         stage.setOnCloseRequest(this::handleCloseRequest);
         stage.show();
     }
@@ -122,22 +124,31 @@ public class UsuarioController {
      */
     public void cerrarSesion(ActionEvent event) {
         try {
-            //Aqui recogemos la escena de la ventana del boton de cerrar sesion y la guardamos en una variable
-            Stage ventanaActual = (Stage) btn_CerrarSesion.getScene().getWindow();
-            //Cerramos la ventana
-            ventanaActual.close();
-            //Cargamos la vista de la ventana de inicio de sesion
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/InicioSesion.fxml"));
+            //Creamos un nuevo objeto Alerta
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setHeaderText(null);
+            alert.setTitle("Cerrar Sesion");
+            //Mostramos una alerta de confirmacion.
+            alert.setContentText("¿Estas seguro que deseas cerrar la sesion?");
 
-            Parent root = loader.load();
+            Optional<ButtonType> answer = alert.showAndWait();
+            if (answer.get() == ButtonType.OK) {
+                //Aqui recogemos la escena de la ventana del boton de cerrar sesion y la guardamos en una variable
+                Stage ventanaActual = (Stage) btn_CerrarSesion.getScene().getWindow();
+                //Cerramos la ventana
+                ventanaActual.close();
+                //Cargamos la vista de la ventana de inicio de sesion
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/InicioSesion.fxml"));
 
-            InicioSesionController inicio = loader.getController();
+                Parent root = loader.load();
 
-            Scene scene = new Scene(root);
-            Stage stage = new Stage();
-            stage.setScene(scene);
-            stage.show();
-
+                InicioSesionController inicio = loader.getController();
+                inicio.setStage(stage);
+                inicio.initStage(root);
+                stage.show();
+            } else {
+                event.consume();
+            }
         } catch (IOException ex) {
             Logger.getLogger(InicioSesionController.class.getName()).log(Level.SEVERE, null, ex);
         }
