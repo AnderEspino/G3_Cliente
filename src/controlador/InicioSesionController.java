@@ -72,7 +72,7 @@ public class InicioSesionController {
     @FXML
     private PasswordField pswContraseña;
     //Aqui asignamos el patron del email
-    private static final String patronEmail = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{7,300}$";
+    private static final String patronEmail = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,300}$";
     private static final Pattern EMAIL_PATTERN = Pattern.compile(patronEmail);
     //Aqui asignamos el patron de la contraseña
     private static final String PASSWORD_REGEX = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).+$";

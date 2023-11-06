@@ -111,7 +111,7 @@ public class RegistroController {
     private static final String patronContraseña = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).+$";
     private static final Pattern passwordMatcher = Pattern.compile(patronContraseña);
 
-    private static final String patronEmail = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{7,300}$";
+    private static final String patronEmail = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,300}$";
     private static final Pattern emailMatcher = Pattern.compile(patronEmail);
     protected static final Logger LOGGER = Logger.getLogger("/controlador/RegistroController");
 

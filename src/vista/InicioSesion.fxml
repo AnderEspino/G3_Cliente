@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="680.0" style="-fx-background-color: DAE8FC;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controlador.InicioSesionController">
+<Pane fx:id="ventanaInicio" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="680.0" style="-fx-background-color: DAE8FC;" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controlador.InicioSesionController">
     <children>
         <TextField fx:id="textEmail" layoutX="340.0" layoutY="167.0" prefHeight="25.0" prefWidth="179.0" style="-fx-border-color: blue;" />
         <PasswordField fx:id="pswContraseña" layoutX="340.0" layoutY="237.0" prefHeight="25.0" prefWidth="179.0" style="-fx-border-color: blue;" />
