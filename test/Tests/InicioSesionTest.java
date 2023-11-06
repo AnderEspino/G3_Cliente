@@ -78,11 +78,22 @@ public class InicioSesionTest extends ApplicationTest {
 
     }
 
+    /**
+     * Método de prueba para comprobar si la ventana de inicio está abierta.
+     *
+     * @author Ander
+     */
     @Test
     public void Test1_comprobar_ventana_abierta() {
         verifyThat("#ventanaInicio", isVisible());
     }
 
+    /**
+     * Método de prueba para verificar si el botón de inicio está habilitado
+     * cuando se ingresan credenciales válidas.
+     *
+     * @author Ander
+     */
     @Test
     public void Test2_comprobar_boton_inicio_habilitado() {
         getCampos();
@@ -93,6 +104,12 @@ public class InicioSesionTest extends ApplicationTest {
         pswContraseña.clear();
     }
 
+    /**
+     * Método de prueba para verificar que el botón de inicio está deshabilitado
+     * cuando no se ingresan credenciales.
+     *
+     * @author Ander
+     */
     @Test
     public void Test3_comprobar_boton_inicio_deshabilitado() {
         getCampos();
@@ -107,6 +124,12 @@ public class InicioSesionTest extends ApplicationTest {
         pswContraseña.clear();
     }
 
+    /**
+     * Método de prueba para verificar el patrón incorrecto del correo
+     * electrónico.
+     *
+     * @author Ander
+     */
     @Test
     public void Test4_PatronEmailIncorrecto() {
         clickOn("#textEmail").write("ejemplo");
@@ -125,6 +148,12 @@ public class InicioSesionTest extends ApplicationTest {
 
     }
 
+    /**
+     * Método de prueba para verificar si el correo electrónico excede el número
+     * máximo de caracteres permitidos.
+     *
+     * @author Ander
+     */
     @Test
     public void Test5_MaxCaracteres() {
         clickOn("#textEmail").write("emailconpatronmasde40caracteres@gmail.com");
@@ -135,6 +164,12 @@ public class InicioSesionTest extends ApplicationTest {
         pswContraseña.clear();
     }
 
+    /**
+     * Método de prueba para verificar si se muestra un error al ingresar una
+     * contraseña incorrecta.
+     *
+     * @author Ander
+     */
     @Test
     public void Test6_ContraseñaIncorrecta() {
 
@@ -161,6 +196,11 @@ public class InicioSesionTest extends ApplicationTest {
 
     }
 
+    /**
+     * Método de prueba para verificar la visibilidad del campo de contraseña.
+     *
+     * @author Ander
+     */
     @Test
     public void Test7_OjoVisible() {
         verifyThat("#pswContraseña", isVisible());
@@ -171,12 +211,11 @@ public class InicioSesionTest extends ApplicationTest {
 
     }
 
-    /* @Test
-    public void Test8_Cerrar() {
-        WindowEvent closeEvent = new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST);
-        stage.fireEvent(closeEvent);
-        verifyThat("#closeEvent", isVisible());
-    }
+    /**
+     * Método de prueba para verificar si el hipervínculo de la cuenta está
+     * habilitado y muestra el panel correspondiente.
+     *
+     * @author Ander
      */
     @Test
     public void Test9_hyperlink_cuenta_habilitado() {
@@ -187,7 +226,7 @@ public class InicioSesionTest extends ApplicationTest {
     /*
     @Test
     @Before
-    public void Test10_inicio_sesion_funciona() {
+    public void Test10_inicio_sesion_funcional() {
         clickOn("#textEmail").write("ejemplo@example.com");
         clickOn("#pswContraseña").write("Contraseña01");
         clickOn("#btnInicioSesion");
@@ -195,5 +234,4 @@ public class InicioSesionTest extends ApplicationTest {
 
     }
      */
-    
 }

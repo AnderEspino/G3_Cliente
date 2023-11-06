@@ -44,8 +44,6 @@ public class UsuarioController {
     @FXML
     private Label lbl_Saludo;
     @FXML
-    private Pane pane2;
-    @FXML
     private ImageView img_Perfil;
     @FXML
     private Label lbl_usuario;
