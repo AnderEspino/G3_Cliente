@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.AmbientLight?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
@@ -10,32 +10,33 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="680.0" style="-fx-background-color: DAE8FC;" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controlador.InicioSesionController">
-   <children>
-      <Label fx:id="lbl_Inicio" alignment="CENTER" layoutX="185.0" layoutY="47.0" prefHeight="39.0" prefWidth="310.0" style="-fx-font-size: 30; -fx-font-weight: bold;" text="INICIO DE SESION" />
-      <Label fx:id="error" alignment="CENTER" layoutX="-1.0" layoutY="92.0" prefHeight="50.0" prefWidth="680.0" style="-fx-font-size: 15;" text="Aqui mostramos los errores de esta ventana" textFill="RED" />
-      <Label fx:id="lblEmail" alignment="TOP_LEFT" contentDisplay="CENTER" layoutX="177.0" layoutY="164.0" prefHeight="25.0" prefWidth="137.0" style="-fx-font-size: 20;" text="Email" textAlignment="CENTER">
-         <font>
-            <Font name="Lucida Console" size="12.0" />
-         </font></Label>
-      <Label fx:id="lblPassword" alignment="TOP_LEFT" layoutX="175.0" layoutY="234.0" prefHeight="30.0" prefWidth="158.0" style="-fx-font-size: 20;" text="Contraseña" />
-      <TextField fx:id="textEmail" layoutX="340.0" layoutY="167.0" prefHeight="25.0" prefWidth="179.0" style="-fx-border-color: blue;" />
-      <Button fx:id="btnInicioSesion" alignment="CENTER" layoutX="261.0" layoutY="384.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="158.0" style="-fx-background-radius: 30; -fx-background-color: #0050EF; -fx-font-style: white; -fx-font-size: 15;" text="Iniciar Sesion" textFill="#fcfcfc" />
-      <Label fx:id="lblCuenta" alignment="CENTER" layoutX="200.0" layoutY="334.0" prefHeight="25.0" prefWidth="279.0" style="-fx-font-size: 15;" text="¿Todavia no tienes cuenta?" textFill="#3da9a1">
-         <font>
-            <Font name="System Bold" size="16.0" />
-         </font></Label>
-      <AmbientLight color="CHARTREUSE" layoutX="105.0" layoutY="69.0" lightOn="true" />
-      <PasswordField fx:id="pswContraseña" layoutX="340.0" layoutY="237.0" prefHeight="25.0" prefWidth="179.0" style="-fx-border-color: blue;" />
-      <Button fx:id="btn_verContra" layoutX="530.0" layoutY="237.0" mnemonicParsing="false" prefHeight="21.0" prefWidth="29.0" style="-fx-background-color: #44ccf5; -fx-background-radius: 30px;" textFill="#44ccf5">
-         <graphic>
-            <ImageView fx:id="img_ojo" fitHeight="20.0" fitWidth="19.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@/utilidades/abierto.png" />
-               </image>
-            </ImageView>
-         </graphic>
-      </Button>
-      <TextField fx:id="txt_contraReve" layoutX="340.0" layoutY="237.0" prefHeight="25.0" prefWidth="179.0" style="-fx-border-color: blue;" />
-   </children>
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="680.0" style="-fx-background-color: DAE8FC;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controlador.InicioSesionController">
+    <children>
+        <TextField fx:id="textEmail" layoutX="340.0" layoutY="167.0" prefHeight="25.0" prefWidth="179.0" style="-fx-border-color: blue;" />
+        <PasswordField fx:id="pswContraseña" layoutX="340.0" layoutY="237.0" prefHeight="25.0" prefWidth="179.0" style="-fx-border-color: blue;" />
+        <TextField fx:id="txt_contraReve" layoutX="340.0" layoutY="237.0" prefHeight="25.0" prefWidth="179.0" style="-fx-border-color: blue;" />
+        <Button fx:id="btn_verContra" layoutX="530.0" layoutY="237.0" mnemonicParsing="false" prefHeight="21.0" prefWidth="29.0" style="-fx-background-color: #44ccf5; -fx-background-radius: 30px;" textFill="#44ccf5">
+            <graphic>
+                <ImageView fx:id="img_ojo" fitHeight="20.0" fitWidth="19.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@/utilidades/abierto.png" />
+                    </image>
+                </ImageView>
+            </graphic>
+        </Button>
+        <Hyperlink fx:id="lblCuenta" alignment="CENTER" layoutX="200.0" layoutY="327.0" prefHeight="25.0" prefWidth="279.0" style="-fx-font-size: 15;" text="¿Todavia no tienes cuenta?" textFill="#3da9a1">
+            <font>
+                <Font name="System Bold" size="16.0" />
+            </font>
+        </Hyperlink>
+        <Button fx:id="btnInicioSesion" alignment="CENTER" layoutX="261.0" layoutY="384.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="158.0" style="-fx-background-radius: 30; -fx-background-color: #0050EF; -fx-font-style: white; -fx-font-size: 15;" text="Iniciar Sesion" textFill="#fcfcfc" />
+        <Label fx:id="lbl_Inicio" alignment="CENTER" layoutX="185.0" layoutY="47.0" prefHeight="39.0" prefWidth="310.0" style="-fx-font-size: 30; -fx-font-weight: bold;" text="INICIO DE SESION" />
+        <Label fx:id="error" alignment="CENTER" layoutX="-1.0" layoutY="92.0" prefHeight="50.0" prefWidth="680.0" style="-fx-font-size: 15;" text="Aqui mostramos los errores de esta ventana" textFill="RED" />
+        <Label fx:id="lblEmail" alignment="TOP_LEFT" contentDisplay="CENTER" layoutX="177.0" layoutY="164.0" prefHeight="25.0" prefWidth="137.0" style="-fx-font-size: 20;" text="Email" textAlignment="CENTER">
+            <font>
+                <Font name="Lucida Console" size="12.0" />
+            </font>
+        </Label>
+        <Label fx:id="lblPassword" alignment="TOP_LEFT" layoutX="175.0" layoutY="234.0" prefHeight="30.0" prefWidth="158.0" style="-fx-font-size: 20;" text="Contraseña" />
+    </children>
 </Pane>

@@ -12,6 +12,7 @@ import javafx.stage.Stage;
  */
 public class Application extends javafx.application.Application {
 
+    //Clase main del cliente, inicializa la ventana de inicial de nuestra aplicación
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/InicioSesion.fxml"));

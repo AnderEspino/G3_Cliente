@@ -28,6 +28,7 @@ public class SignerClient implements Sign {
     private static final ResourceBundle archivo = ResourceBundle.getBundle("utilidades.Config");
     private static final int PUERTO = Integer.parseInt(archivo.getString("PORT"));
     private static final String HOST = ResourceBundle.getBundle("utilidades.Config").getString("IP");
+    private static final Logger LOGGER = Logger.getLogger("/modelo/SignerClient");
     MessageType mt;
     private Message msg = null;
 
@@ -37,11 +38,10 @@ public class SignerClient implements Sign {
         ObjectInputStream ois = null;
 
         try {
-            //Enviamos el objecto encapsulado al servidor
-
+            LOGGER.info("Iniciando registro...");
+            //Instanciamos el socket
             Socket socketCliente = new Socket(HOST, PUERTO);
-            System.out.println("Conexión con el servidor establecida");
-
+            //Creamos el output y preparamos el encapsulador para enviarlo al servidor
             oos = new ObjectOutputStream(socketCliente.getOutputStream());
             msg = new Message();
             msg.setUser(user);
@@ -52,9 +52,8 @@ public class SignerClient implements Sign {
             ois = new ObjectInputStream(socketCliente.getInputStream());
             msg = (Message) ois.readObject();
             user = msg.getUser();
-
+            //Cerramos las conexiónes
             oos.close();
-
             socketCliente.close();
             //Dependiendo de el mensaje que reciva lanza o escribe un mensaje nuevo
             switch (msg.getMsg()) {
@@ -65,12 +64,13 @@ public class SignerClient implements Sign {
                 case ERROR_RESPONSE:
                     throw new ConnectException("Ha ocurrido algun error en el servidor");
             }
-
+            //Control de errores
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(SignerClient.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(SignerClient.class.getName()).log(Level.SEVERE, null, ex);
         }
+        //Devuleve un objeto user
         return user;
     }
 
@@ -81,10 +81,6 @@ public class SignerClient implements Sign {
      * @param user objeto de tipo Usuario
      * @throws IncorrectCredentialsException esta excepción se lanza cuando hay
      * un error en la contraseña
-     * @throws UserNotFoundException esta excepción se lanza cuando no se
-     * encuentra el usuario
-     * @throws ConnectException esta excepción se lanza cuando hay un error en
-     * el servidor
      * @return usuario
      */
     @Override
@@ -93,10 +89,10 @@ public class SignerClient implements Sign {
         ObjectInputStream ois = null;
 
         try {
-            //Enviamos el objecto encapsulado al servidor
+            //Instanciamos el socket
+            LOGGER.info("Iniciando Sesión...");
             Socket socketCliente = new Socket(HOST, PUERTO);
-            System.out.println("Conexión con el servidor establecida");
-
+            //Creamos el output y preparamos el encapsulador para enviarlo al servidor
             oos = new ObjectOutputStream(socketCliente.getOutputStream());
             msg = new Message();
             msg.setUser(user);
@@ -107,6 +103,7 @@ public class SignerClient implements Sign {
             ois = new ObjectInputStream(socketCliente.getInputStream());
             msg = (Message) ois.readObject();
             user = msg.getUser();
+            //Cerramos las conexiones
             oos.close();
             ois.close();
             socketCliente.close();
@@ -120,12 +117,13 @@ public class SignerClient implements Sign {
                     throw new ConnectException("Ha ocurrido un error en el servidor.");
 
             }
-
+            //Control de excepciones
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(SignerClient.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(SignerClient.class.getName()).log(Level.SEVERE, null, ex);
         }
+        //Devuelve un obejto user
         return user;
     }
 }

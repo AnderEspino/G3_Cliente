@@ -22,6 +22,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -67,11 +68,11 @@ public class InicioSesionController {
     @FXML
     private Button btnInicioSesion;
     @FXML
-    private Label lblCuenta;
+    private Hyperlink lblCuenta;
     @FXML
     private PasswordField pswContraseña;
     //Aqui asignamos el patron del email
-    private static final String patronEmail = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+    private static final String patronEmail = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{7,300}$";
     private static final Pattern EMAIL_PATTERN = Pattern.compile(patronEmail);
     //Aqui asignamos el patron de la contraseña
     private static final String PASSWORD_REGEX = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).+$";
@@ -305,28 +306,37 @@ public class InicioSesionController {
     }
 
     private void handleBtnRespuesta(MouseEvent event) {
-        int contadorClics = 0;
-        int MAX_CLICS = 1; // Número máximo de clics para alternar entre mostrar y ocultar contraseñas
 
-        if (event.getButton()
-                .equals(MouseButton.PRIMARY)) {
-            contadorClics++;
+        if (pswContraseña.isVisible()) {
+            pswContraseña.setDisable(true);
+            pswContraseña.setVisible(false);
             txt_contraReve.setDisable(false);
-            if (contadorClics % MAX_CLICS == 0) {
-                // Cada MAX_CLICS clics, se alterna entre mostrar y ocultar las contraseñas
-                pswContraseña.setVisible(!pswContraseña.isVisible());
-                txt_contraReve.setVisible(!txt_contraReve.isVisible());
+            txt_contraReve.setVisible(true);
 
-                if (pswContraseña.isVisible()) {
-                    pswContraseña.setText(txt_contraReve.getText());
+            if (txt_contraReve.isVisible()) {
+                txt_contraReve.setText(pswContraseña.getText());
 
-                } else {
-                    txt_contraReve.setText(pswContraseña.getText());
+            } else {
+                pswContraseña.setText(txt_contraReve.getText());
 
-                }
-
-                img_ojo.setImage(new Image(pswContraseña.isVisible() ? "/utilidades/abierto.png" : "/utilidades/cerrado.png"));
             }
+
+            img_ojo.setImage(new Image(pswContraseña.isVisible() ? "/utilidades/abierto.png" : "/utilidades/cerrado.png"));
+        } else {
+            txt_contraReve.setDisable(true);
+            txt_contraReve.setVisible(false);
+            pswContraseña.setDisable(false);
+            pswContraseña.setVisible(true);
+
+            if (pswContraseña.isVisible()) {
+                pswContraseña.setText(txt_contraReve.getText());
+
+            } else {
+                txt_contraReve.setText(pswContraseña.getText());
+
+            }
+
+            img_ojo.setImage(new Image(pswContraseña.isVisible() ? "/utilidades/abierto.png" : "/utilidades/cerrado.png"));
         }
     }
 

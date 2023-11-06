@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -25,6 +26,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -65,7 +67,7 @@ public class RegistroController {
     @FXML
     private TextField txt_email;
     @FXML
-    private Label lbl_hyperlinkCuenta;
+    private Hyperlink lbl_hyperlinkCuenta;
     @FXML
     private Button btn_registro;
     @FXML
@@ -109,7 +111,7 @@ public class RegistroController {
     private static final String patronContraseña = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).+$";
     private static final Pattern passwordMatcher = Pattern.compile(patronContraseña);
 
-    private static final String patronEmail = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+    private static final String patronEmail = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{7,300}$";
     private static final Pattern emailMatcher = Pattern.compile(patronEmail);
     protected static final Logger LOGGER = Logger.getLogger("/controlador/RegistroController");
 
@@ -172,6 +174,7 @@ public class RegistroController {
          * FXMLLoader cargamos la ventana de InicioSesion.fxml
          */
         try {
+            LOGGER.info("Iniciando la ventana de Inicio de sesión");
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/InicioSesion.fxml"));
             Parent root = (Parent) loader.load();
             InicioSesionController signIn = ((InicioSesionController) loader.getController());
@@ -184,63 +187,71 @@ public class RegistroController {
     }
 
     private void revelarContra(MouseEvent event) {
-        /*
-          Método para revelar y ocultar las contraseñas de la ventana del primer botón
-         */
-        int contadorClics = 0;
-        int MAX_CLICS = 1; // Número máximo de clics para alternar entre mostrar y ocultar contraseñas
-
-        if (event.getButton()
-                .equals(MouseButton.PRIMARY)) {
-            contadorClics++;
+        if (psw_contra.isVisible()) {
+            psw_contra.setDisable(true);
+            psw_contra.setVisible(false);
             txt_contraReve.setDisable(false);
-            if (contadorClics % MAX_CLICS == 0) {
-                // Cada MAX_CLICS clics, se alterna entre mostrar y ocultar las contraseñas
-                psw_contra.setVisible(!psw_contra.isVisible());
-                txt_contraReve.setVisible(!txt_contraReve.isVisible());
+            txt_contraReve.setVisible(true);
 
-                if (psw_contra.isVisible()) {
-                    psw_contra.setText(txt_contraReve.getText());
+            if (txt_contraReve.isVisible()) {
+                txt_contraReve.setText(psw_contra.getText());
 
-                } else {
-                    txt_contraReve.setText(psw_contra.getText());
+            } else {
+                psw_contra.setText(txt_contraReve.getText());
 
-                }
-
-                img_ojo.setImage(new Image(psw_contra.isVisible() ? "/utilidades/abierto.png" : "/utilidades/cerrado.png"));
             }
-        }
 
+            img_ojo.setImage(new Image(psw_contra.isVisible() ? "/utilidades/abierto.png" : "/utilidades/cerrado.png"));
+        } else {
+            txt_contraReve.setDisable(true);
+            txt_contraReve.setVisible(false);
+            psw_contra.setDisable(false);
+            psw_contra.setVisible(true);
+
+            if (psw_contra.isVisible()) {
+                psw_contra.setText(txt_contraReve.getText());
+
+            } else {
+                txt_contraReve.setText(psw_contra.getText());
+
+            }
+
+            img_ojo.setImage(new Image(psw_contra.isVisible() ? "/utilidades/abierto.png" : "/utilidades/cerrado.png"));
+        }
     }
 
     private void revelarContraRepe(MouseEvent event) {
-        /*
-          Método para revelar y ocultar las contraseñas de la ventana del segundo botón
-         */
-        int contadorClics = 0;
-        int MAX_CLICS = 1; // Número máximo de clics para alternar entre mostrar y ocultar contraseñas
-
-        if (event.getButton()
-                .equals(MouseButton.PRIMARY)) {
-            contadorClics++;
+        if (psw_contraRepe.isVisible()) {
+            psw_contraRepe.setDisable(true);
+            psw_contraRepe.setVisible(false);
             txt_contraRepeReve.setDisable(false);
-            if (contadorClics % MAX_CLICS == 0) {
-                // Cada MAX_CLICS clics, se alterna entre mostrar y ocultar las contraseñas
-                psw_contraRepe.setVisible(!psw_contraRepe.isVisible());
-                txt_contraRepeReve.setVisible(!txt_contraRepeReve.isVisible());
+            txt_contraRepeReve.setVisible(true);
 
-                if (psw_contraRepe.isVisible()) {
-                    psw_contraRepe.setText(txt_contraRepeReve.getText());
+            if (txt_contraRepeReve.isVisible()) {
+                txt_contraRepeReve.setText(psw_contraRepe.getText());
 
-                } else {
-                    txt_contraRepeReve.setText(psw_contraRepe.getText());
+            } else {
+                psw_contraRepe.setText(txt_contraRepeReve.getText());
 
-                }
-
-                img_ojo2.setImage(new Image(psw_contraRepe.isVisible() ? "/utilidades/abierto.png" : "/utilidades/cerrado.png"));
             }
-        }
 
+            img_ojo2.setImage(new Image(psw_contraRepe.isVisible() ? "/utilidades/abierto.png" : "/utilidades/cerrado.png"));
+        } else {
+            txt_contraRepeReve.setDisable(true);
+            txt_contraRepeReve.setVisible(false);
+            psw_contraRepe.setDisable(false);
+            psw_contraRepe.setVisible(true);
+
+            if (psw_contraRepe.isVisible()) {
+                psw_contraRepe.setText(txt_contraRepeReve.getText());
+
+            } else {
+                txt_contraRepeReve.setText(psw_contraRepe.getText());
+
+            }
+
+            img_ojo2.setImage(new Image(psw_contraRepe.isVisible() ? "/utilidades/abierto.png" : "/utilidades/cerrado.png"));
+        }
     }
 
     private void registrarBotón(ActionEvent event) {
