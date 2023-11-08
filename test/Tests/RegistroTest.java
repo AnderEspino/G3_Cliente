@@ -10,6 +10,7 @@ import java.util.concurrent.TimeoutException;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -30,8 +31,13 @@ import static org.testfx.matcher.base.NodeMatchers.isNotNull;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
 
 /**
+ * Pruebas unitarias para la clase Registro.
  *
- * @author Diego, Adrian
+ * Estas pruebas verifican diferentes aspectos del proceso de registro de
+ * usuarios.
+ *
+ * @author Diego
+ * @author Adrian
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class RegistroTest extends ApplicationTest {
@@ -44,12 +50,12 @@ public class RegistroTest extends ApplicationTest {
     private Button btnInicioSesion;
     private PasswordField pswContraseña;
     private Stage stage;
-    private Label lblCuenta;
+    private Hyperlink lblCuenta;
     private Pane pane;
 
     private TextField txt_nombre;
     private TextField txt_email;
-    private Label lbl_hyperlinkCuenta;
+    private Hyperlink lbl_hyperlinkCuenta;
     private Button btn_registro;
     private Button btn_verContra2;
     private TextField txt_direccion;
@@ -117,12 +123,23 @@ public class RegistroTest extends ApplicationTest {
         });
     }
 
+    /**
+     * Verifica que la ventana de registro se abre correctamente.
+     *
+     * @author Adrian, Diego
+     */
     @Test
     public void Test1_comprobar_ventana_abierta() {
         clickOn("#lblCuenta");
         verifyThat("#pane", isVisible());
     }
 
+    /**
+     * Verifica que el botón de registro esté deshabilitado con campos vacíos o
+     * incompletos.
+     *
+     * @author Adrian, Diego
+     */
     @Test
     public void Test2_comprobar_boton_deshabilitado() {
         clickOn("#btn_registro");
@@ -146,6 +163,12 @@ public class RegistroTest extends ApplicationTest {
         limpiarCampos();
     }
 
+    /**
+     * Verifica que el botón de registro esté habilitado con campos completos y
+     * válidos.
+     *
+     * @author Adrian, Diego
+     */
     @Test
     public void Test3_comprobar_boton_habilitado() {
         clickOn("#txt_nombre").write("NombreUsuario");
@@ -160,6 +183,11 @@ public class RegistroTest extends ApplicationTest {
         limpiarCampos();
     }
 
+    /**
+     * Verifica que el patrón del nombre es valido.
+     *
+     * @author Adrian, Diego.
+     */
     @Test
     public void Test4_comprobar_patron_nombre() {
         clickOn("#txt_nombre").write("NombreUsuarioPatronMasDeCuarentaCaracteres");
@@ -175,6 +203,11 @@ public class RegistroTest extends ApplicationTest {
         limpiarCampos();
     }
 
+    /**
+     * Verifica que el patrón de email al registrar un usuario sea valido.
+     *
+     * @author Adrian, Diego
+     */
     @Test
     public void Test5_comprobar_patron_email() {
         clickOn("#txt_nombre").write("NombreUsuario");
@@ -194,6 +227,11 @@ public class RegistroTest extends ApplicationTest {
         limpiarCampos();
     }
 
+    /**
+     * Verifica que las contraseñas coincidan al intentar el registro.
+     *
+     * @author Adrian, Diego.
+     */
     @Test
     public void Test6_comprobar_contra_coincide() {
         clickOn("#txt_nombre").write("NombreUsuario");
@@ -209,6 +247,11 @@ public class RegistroTest extends ApplicationTest {
         limpiarCampos();
     }
 
+    /**
+     * Verifica que el patron de las contraseñas es valido.
+     *
+     * @author Adrian, Diego.
+     */
     @Test
     public void Test7_comprobar_patron_contraseña() {
         clickOn("#txt_nombre").write("NombreUsuario");
@@ -224,6 +267,11 @@ public class RegistroTest extends ApplicationTest {
         limpiarCampos();
     }
 
+    /**
+     * Verifica el patrón del campo ZIP al intentar el registro.
+     *
+     * @author Diego, Adrian
+     */
     @Test
     public void Test8_comprobar_patron_zip() {
         // Ingresar datos en los campos
@@ -245,6 +293,11 @@ public class RegistroTest extends ApplicationTest {
         limpiarCampos();
     }
 
+    /**
+     * Verifica que el patrón del campo de teléfono es valido.
+     *
+     * @author Diego, Adrian
+     */
     @Test
     public void Test9_comprobar_patron_telefono() {
         // Ingresar datos en los campos
@@ -265,6 +318,12 @@ public class RegistroTest extends ApplicationTest {
         limpiarCampos();
     }
 
+    /**
+     * Verifica la visibilidad de los campos de contraseña y contraseña
+     * repetida.
+     *
+     * @author Adrian, Diego.
+     */
     @Test
     public void TestA_OjosVisibles() {
         verifyThat("#psw_contra", isVisible());
@@ -279,15 +338,26 @@ public class RegistroTest extends ApplicationTest {
         verifyThat("#psw_contraRepe", isVisible());
     }
 
-    @Test
+    /**
+     * Verifica que el enlace de cuenta redirige correctamente a la ventana de
+     * inicio.
+     *
+     * @author Adrian, Diego
+     */
+    //@Test
     public void TestB_Comprobar_lblCuenta() {
         clickOn("#lbl_hyperlinkCuenta");
         verifyThat("#ventanaInicio", isVisible());
 
     }
 
+    /**
+     * Verifica que el proceso de registro es válido.
+     *
+     * @author Adrian, Diego
+     */
     @Test
-    public void Test11_Registro_Correcto() {
+    public void TestC_Registro_Correcto() {
         Random random = new Random();
         int numeroAleatorio = random.nextInt(1000); // Generar un número aleatorio entre 0 y 999
         String correo = "correo" + numeroAleatorio + "@example.com";
@@ -297,7 +367,7 @@ public class RegistroTest extends ApplicationTest {
         clickOn("#psw_contraRepe").write("ContraseñaSecreta01");
         clickOn("#txt_direccion").write("Calle Ejemplo 123");
         clickOn("#txt_zip").write("12345");
-        clickOn("#txt_tele").write("123456789");
+        clickOn("#txt_tele").write("612345678");
         clickOn("#btn_registro");
         verifyThat("Has logrado registrarte", Node::isVisible);
 

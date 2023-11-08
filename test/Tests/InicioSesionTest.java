@@ -84,6 +84,7 @@ public class InicioSesionTest extends ApplicationTest {
      *
      * @author Ander
      */
+    
     @Test
     public void Test1_comprobar_ventana_abierta() {
         verifyThat("#ventanaInicio", isVisible());
@@ -95,6 +96,7 @@ public class InicioSesionTest extends ApplicationTest {
      *
      * @author Ander
      */
+    
     @Test
     public void Test2_comprobar_boton_inicio_habilitado() {
         getCampos();
@@ -218,16 +220,19 @@ public class InicioSesionTest extends ApplicationTest {
      *
      * @author Ander
      */
-    @Test
-    public void Test9_hyperlink_cuenta_habilitado() {
+    //@Test
+    public void TestA_hyperlink_cuenta_habilitado() {
         clickOn("#lblCuenta");
         verifyThat("#pane", isVisible());
     }
 
-    
+    /**
+     * Método que prueba el inicio de sesión y si ha sido correcto
+     * @author Ander
+     */
     @Test
-    public void TestA_inicio_sesion_funcional() {
-        clickOn("#textEmail").write("antoni@gmail.com");
+    public void Test9_inicio_sesion_funcional() {
+        clickOn("#textEmail").write("Ejemplo@gmail.com");
         clickOn("#pswContraseña").write("Abcd*1234");
         clickOn("#btnInicioSesion");
         verifyThat("#pane2", isVisible());

@@ -247,7 +247,6 @@ public class RegistroController {
 
             } else {
                 txt_contraRepeReve.setText(psw_contraRepe.getText());
-
             }
 
             img_ojo2.setImage(new Image(psw_contraRepe.isVisible() ? "/utilidades/abierto.png" : "/utilidades/cerrado.png"));
@@ -274,13 +273,13 @@ public class RegistroController {
             }
             //Comprobamos que la contraseña se alfanumerica, tenga mayúsculas, minúsculas y tenga más de 8 carácteres
             contraseña = psw_contra.getText();
-            if (!(passwordMatcher.matcher(contraseña).matches()) || contraseña.length() < 8) {
+            if ((!(passwordMatcher.matcher(contraseña).matches()) || contraseña.length() < 8) && (!passwordMatcher.matcher(txt_contraReve.getText()).matches() || txt_contraReve.getText().length() < 8)) {
                 psw_contra.setText("");
                 txt_contraReve.setText("");
                 throw new IncorrectPatternException("Formato erroneo, introduce más 8 carácteres alfanuméricos"
                         + " añade una minuscula o mayúscula al menos.");
                 //Comprobamos que las contraseñas coinciden
-            } else if (!psw_contra.getText().equals(psw_contraRepe.getText())) {
+            } else if ((!psw_contra.getText().equals(psw_contraRepe.getText()))&& (!passwordMatcher.matcher(txt_contraRepeReve.getText()).matches() || txt_contraRepeReve.getText().length() < 8)) {
                 psw_contraRepe.setText("");
                 txt_contraRepeReve.setText("");
                 throw new PasswordDoesntMatchException("Las contraseñas no coinciden.");

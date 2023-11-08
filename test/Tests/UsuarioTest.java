@@ -15,6 +15,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import modelo.User;
+import org.hamcrest.Matcher;
+import static org.hamcrest.Matchers.not;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
@@ -26,13 +29,20 @@ import org.testfx.framework.junit.ApplicationTest;
 import static org.testfx.matcher.base.NodeMatchers.isDisabled;
 import static org.testfx.matcher.base.NodeMatchers.isEnabled;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
+import static org.testfx.matcher.control.LabeledMatchers.hasText;
 
 /**
- *
+ * Pruebas unitarias para la clase UsuarioController.
+ * 
+ * Estas pruebas verifican el comportamiento de los métodos en la clase UsuarioController.
+ * 
+ * @author Ander
  * @author Diego
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class UsuarioTest extends ApplicationTest {
+
+    private User user;
 
     @FXML
     private Pane pane;
@@ -40,8 +50,8 @@ public class UsuarioTest extends ApplicationTest {
     private Label lbl_Saludo;
     private Label lbl_usuario;
     private Label lbl_email;
-    private User user;
     private Button btnInicioSesion;
+    private Pane ventanaInicio;
 
     /**
      * Starts application to be tested.
@@ -67,17 +77,66 @@ public class UsuarioTest extends ApplicationTest {
     @Before
     public void getCampos() {
         pane = lookup("#pane").query();
+        ventanaInicio = lookup("#ventanaInicio").query();
         btn_CerrarSesion = lookup("#btn_CerrarSesion").query();
         lbl_Saludo = lookup("#lbl_Saludo").query();
         lbl_usuario = lookup("#lbl_usuario").query();
         lbl_email = lookup("#lbl_email").query();
     }
 
+    /**
+     * Verifica que la ventana se abre correctamente después de iniciar sesión.
+     *
+     * @author Ander, Diego
+     */
     @Test
-    public void Test1_comprobar_ventana_abierta() {
-        clickOn("#textEmail").write("ejemplo@example.com");
-        clickOn("#pswContraseña").write("Contraseña01");
+    public void Test1_Comprobar_ventana_abierta() {
+        clickOn("#textEmail").write("correo638@example.com");
+        clickOn("#pswContraseña").write("ContraseñaSecreta01");
         clickOn("#btnInicioSesion");
         verifyThat("#pane", isVisible());
+    }
+
+    /**
+     * Verifica que el saludo no sea nulo después de iniciar sesión.
+     *
+     * @author Diego
+     */
+    @Test
+    public void Test2_Comprobar_Saludo() {
+        String nulo = "Hola null";
+        Assert.assertNotEquals(lbl_Saludo.getText(), nulo);
+
+    }
+
+    /**
+     * Verifica que el nombre de usuario no sea nulo después de iniciar sesión.
+     * @author Diego
+     */
+    @Test
+    public void Test3_Comprobar_Nombre_Usuario() {
+        Assert.assertNotEquals(lbl_usuario.getText(), null);
+
+    }
+    
+    /**
+     * Verifica que el email del usuario no sea nulo después de iniciar sesión.
+     * @author Diego
+     */
+    @Test
+    public void Test4_Comprobar_Email_Usuario() {
+        Assert.assertNotEquals(lbl_email.getText(), null);
+
+    }
+    /**
+     * Verifica que el botón de cerrar sesión funcione correctamente.
+     * @author Ander
+     */
+    @Test
+    public void Test5_Boton_cerrar_sesion() {
+        clickOn("#btn_CerrarSesion");
+        clickOn("Aceptar");
+        verifyThat("#ventanaInicio", isVisible());
+
     }
 }

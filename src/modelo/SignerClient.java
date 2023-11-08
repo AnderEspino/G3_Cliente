@@ -63,11 +63,15 @@ public class SignerClient implements Sign {
                     throw new UserAlreadyExistsException("El usuario ya existe");
                 case ERROR_RESPONSE:
                     throw new ConnectException("Ha ocurrido algun error en el servidor");
+                case MAX_THREAD_USER:
+                    throw new Exception("Demasiados usuarios en el servidor.");
             }
             //Control de errores
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(SignerClient.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
+            Logger.getLogger(SignerClient.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) { 
             Logger.getLogger(SignerClient.class.getName()).log(Level.SEVERE, null, ex);
         }
         //Devuleve un objeto user
@@ -115,12 +119,17 @@ public class SignerClient implements Sign {
                     throw new IncorrectCredentialsException("Email o contraseña incorrectos.");
                 case ERROR_RESPONSE:
                     throw new ConnectException("Ha ocurrido un error en el servidor.");
+                
+                case MAX_THREAD_USER:
+                    throw new Exception("Demasiados usuarios en el servidor.");
 
             }
             //Control de excepciones
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(SignerClient.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
+            Logger.getLogger(SignerClient.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) { 
             Logger.getLogger(SignerClient.class.getName()).log(Level.SEVERE, null, ex);
         }
         //Devuelve un obejto user

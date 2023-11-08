@@ -161,7 +161,11 @@ public class InicioSesionController {
             if (camposInformados() && maxCarecteres()) {
                 User user = new User();
                 user.setEmail(textEmail.getText());
-                user.setContraseña(pswContraseña.getText());
+                if(pswContraseña.isVisible()){
+                    user.setContraseña(pswContraseña.getText());
+                } else {
+                    user.setContraseña(txt_contraReve.getText());
+                }
 
                 SocketFactory fac = new SocketFactory();
                 //Recogemos el socket
@@ -249,7 +253,7 @@ public class InicioSesionController {
             error.setVisible(true);
             error.setText("El email no cumple con el patron ");
             return false;
-        } else if (!PASSWORD__PATTERN.matcher(pswContraseña.getText()).matches()) {
+        } else if (!PASSWORD__PATTERN.matcher(pswContraseña.getText()).matches() && !PASSWORD__PATTERN.matcher(txt_contraReve.getText()).matches()) {
             //Hacemos que el lbl error se vea
             error.setVisible(true);
             error.setText("La contraseña debe de contener al menos 8 caracteres, una mayuscula y minuscula");
