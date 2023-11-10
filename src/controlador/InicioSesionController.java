@@ -161,7 +161,7 @@ public class InicioSesionController {
             if (camposInformados() && maxCarecteres()) {
                 User user = new User();
                 user.setEmail(textEmail.getText());
-                if(pswContraseña.isVisible()){
+                if (pswContraseña.isVisible()) {
                     user.setContraseña(pswContraseña.getText());
                 } else {
                     user.setContraseña(txt_contraReve.getText());
@@ -309,6 +309,12 @@ public class InicioSesionController {
 
     }
 
+    /**
+     * Este metodo altera la visibilidad de la contraseña
+     *
+     * @author Ander
+     * @param event
+     */
     private void handleBtnRespuesta(MouseEvent event) {
 
         if (pswContraseña.isVisible()) {
