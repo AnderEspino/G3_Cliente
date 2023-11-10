@@ -10,13 +10,13 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="680.0" style="-fx-background-color: #DAE8FC;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controlador.RegistroController">
+<Pane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="680.0" style="-fx-background-color: #DAE8FC;" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controlador.RegistroController">
     <children>
         <TextField fx:id="txt_nombre" layoutX="389.0" layoutY="102.0" style="-fx-border-color: blue;" />
         <TextField fx:id="txt_email" layoutX="389.0" layoutY="142.0" style="-fx-border-color: blue;" />
         <PasswordField fx:id="psw_contra" layoutX="390.0" layoutY="184.0" style="-fx-border-color: blue;" />
         <TextField fx:id="txt_contraReve" layoutX="391.0" layoutY="184.0" style="-fx-border-color: blue;" />
-        <Button fx:id="btn_verContra" layoutX="549.0" layoutY="184.0" mnemonicParsing="false" prefHeight="21.0" prefWidth="29.0" style="-fx-background-color: #44ccf5; -fx-background-radius: 30px;" textFill="#44ccf5">
+        <Button fx:id="btn_verContra" layoutX="609.0" layoutY="184.0" mnemonicParsing="false" prefHeight="21.0" prefWidth="29.0" style="-fx-background-color: #44ccf5; -fx-background-radius: 30px;" textFill="#44ccf5">
             <graphic>
                 <ImageView fx:id="img_ojo" fitHeight="20.0" fitWidth="19.0" pickOnBounds="true" preserveRatio="true">
                     <image>
@@ -27,7 +27,7 @@
         </Button>
         <PasswordField fx:id="psw_contraRepe" layoutX="390.0" layoutY="226.0" style="-fx-border-color: blue;" />
         <TextField fx:id="txt_contraRepeReve" layoutX="391.0" layoutY="226.0" style="-fx-border-color: blue;" />
-        <Button fx:id="btn_verContra2" layoutX="549.0" layoutY="225.0" mnemonicParsing="false" prefHeight="21.0" prefWidth="29.0" style="-fx-background-color: #44ccf5; -fx-background-radius: 30px;" textFill="#44ccf5">
+        <Button fx:id="btn_verContra2" layoutX="609.0" layoutY="227.0" mnemonicParsing="false" prefHeight="21.0" prefWidth="29.0" style="-fx-background-color: #44ccf5; -fx-background-radius: 30px;" textFill="#44ccf5">
             <graphic>
                 <ImageView fx:id="img_ojo2" fitHeight="20.0" fitWidth="19.0" pickOnBounds="true" preserveRatio="true">
                     <image>
@@ -39,7 +39,7 @@
         <TextField fx:id="txt_direccion" layoutX="391.0" layoutY="269.0" style="-fx-border-color: blue;" />
         <TextField fx:id="txt_zip" layoutX="391.0" layoutY="309.0" style="-fx-border-color: blue;" />
         <TextField fx:id="txt_tele" layoutX="391.0" layoutY="352.0" style="-fx-border-color: blue;" />
-        <Hyperlink fx:id="lbl_hyperlinkCuenta" layoutX="245.0" layoutY="396.0" style="-: #3DA9A1;" text="¿Tienes ya una cuenta?" textAlignment="JUSTIFY" textFill="#3da9a1">
+        <Hyperlink fx:id="lbl_hyperlinkCuenta" layoutX="245.0" layoutY="396.0" style="-: #3DA9A1;" text="Tienes ya una cuenta?" textAlignment="JUSTIFY" textFill="#3da9a1">
             <font>
                 <Font name="Lucida Sans Demibold" size="16.0" />
             </font>
