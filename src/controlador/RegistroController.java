@@ -117,6 +117,9 @@ public class RegistroController {
 
     /**
      * Initializes the controller class.
+     *
+     * @author Diego, Adrián
+     * @param root
      */
     public void initStage(Parent root) {
         LOGGER.info("Iniciando la ventana de Registro");
@@ -167,12 +170,14 @@ public class RegistroController {
         this.stage = stage;
     }
 
+    /**
+     * Abre la ventana de Inicio de sesión
+     *
+     * @author Diego, Adrián
+     * @param event
+     */
     private void tienesCuenta(MouseEvent event) {
-        /**
-         * Método para cargar la ventana de Inicio de sesión desde la ventana de
-         * Registro usamos un try-catch para capturar errores, luego mediante el
-         * FXMLLoader cargamos la ventana de InicioSesion.fxml
-         */
+
         try {
             LOGGER.info("Iniciando la ventana de Inicio de sesión");
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/InicioSesion.fxml"));
@@ -186,6 +191,12 @@ public class RegistroController {
         }
     }
 
+    /**
+     * Revela la contraseña de la ventana para el usuario
+     *
+     * @author Diego, Adrián
+     * @param event
+     */
     private void revelarContra(MouseEvent event) {
         if (psw_contra.isVisible()) {
             psw_contra.setDisable(true);
@@ -220,6 +231,12 @@ public class RegistroController {
         }
     }
 
+    /**
+     * Revela la otra contraseña de la ventana para el usuario
+     *
+     * @author Diego, Adrián
+     * @param event
+     */
     private void revelarContraRepe(MouseEvent event) {
         if (psw_contraRepe.isVisible()) {
             psw_contraRepe.setDisable(true);
@@ -253,6 +270,13 @@ public class RegistroController {
         }
     }
 
+    /**
+     * Método del botón de la ventana, recoge la información de la ventana para
+     * hacer el registro
+     *
+     * @author Diego, Adrián
+     * @param event
+     */
     private void registrarBotón(ActionEvent event) {
         /*
           Método para Registrar al usuario en la base de datos del programa, realiza validaciones de patrones y otros
@@ -279,7 +303,7 @@ public class RegistroController {
                 throw new IncorrectPatternException("Formato erroneo, introduce más 8 carácteres alfanuméricos"
                         + " añade una minuscula o mayúscula al menos.");
                 //Comprobamos que las contraseñas coinciden
-            } else if ((!psw_contra.getText().equals(psw_contraRepe.getText()))&& (!passwordMatcher.matcher(txt_contraRepeReve.getText()).matches() || txt_contraRepeReve.getText().length() < 8)) {
+            } else if ((!psw_contra.getText().equals(psw_contraRepe.getText())) && (!passwordMatcher.matcher(txt_contraRepeReve.getText()).matches() || txt_contraRepeReve.getText().length() < 8)) {
                 psw_contraRepe.setText("");
                 txt_contraRepeReve.setText("");
                 throw new PasswordDoesntMatchException("Las contraseñas no coinciden.");
@@ -360,7 +384,7 @@ public class RegistroController {
                 txt_nombre.requestFocus();
                 event.consume();
             }
-
+            //Control de excepciones
         } catch (IncorrectPatternException e) {
             txt_nombre.requestFocus();
             lbl_error.setVisible(true);
@@ -390,6 +414,14 @@ public class RegistroController {
 
     }
 
+    /**
+     * Valida los campos y habilita el botón de registro si están validados
+     *
+     * @author Diego, Adrián
+     * @param observable
+     * @param oldValue
+     * @param newValue
+     */
     private void estanVacios(ObservableValue observable, Object oldValue, Object newValue) {
         /*
            Comprueban que los campos de texto no están vacios, si lo están el botón estará deshabilitado
@@ -414,6 +446,12 @@ public class RegistroController {
         }
     }
 
+    /**
+     * Método para cerrar la ventana
+     *
+     * @author Diego, Adrián
+     * @param event
+     */
     private void cerrarVentana(Event event) {
         /*
             Método para cerrar la ventana desde el botón X
