@@ -6,6 +6,7 @@
 package controlador;
 
 import excepciones.ConnectException;
+import excepciones.EmptyFieldException;
 import excepciones.IncorrectPatternException;
 import excepciones.PasswordDoesntMatchException;
 import excepciones.UserAlreadyExistsException;
@@ -36,6 +37,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import modelo.Message;
+import modelo.MessageType;
 import modelo.Sign;
 import modelo.SocketFactory;
 import modelo.User;
@@ -128,8 +131,8 @@ public class RegistroController {
         stage.setTitle("Registro");
         //El foco estrá en el nombre
         txt_nombre.requestFocus();
-        //El botón está deshabilitado
-        btn_registro.setDisable(true);
+        //El botón está habilitado
+        btn_registro.setDisable(false);
         //El campo de mostrar errores es invisible
         lbl_error.setVisible(false);
         //El campo del hyper-link esthá habilitado
@@ -263,36 +266,73 @@ public class RegistroController {
             if (txt_nombre.getText().trim().length() > 15) {
                 txt_nombre.setText("");
                 throw new IncorrectPatternException("El nombre de usuario es demasiado largo.");
-
+                //Añadimos las comprobaciones de campos vacios pedidas para la modificacion
+            } else if (txt_nombre.getText().trim().isEmpty()) {
+                txt_nombre.requestFocus();
+                lbl_error.setVisible(true);
+                lbl_error.setText("Por favor, introduzca el nombre");
+                throw new EmptyFieldException("Has dejado un campo sin informar");
             }
             //Comprobamos el formato del correo y si no excecde de 40 carácteres
             email = txt_email.getText();
-            if (!emailMatcher.matcher(email).matches() || email.length() > 40) {
+            //Añadimos las comprobaciones de campos vacios pedidas para la modificacion
+            if (txt_email.getText().trim().isEmpty()) {
+                txt_email.requestFocus();
+                lbl_error.setVisible(true);
+                lbl_error.setText("Por favor, introduzca el correo");
+                throw new EmptyFieldException("Has dejado un campo sin informar");
+            } else if (!emailMatcher.matcher(email).matches() || email.length() > 40) {
                 txt_email.setText("");
                 throw new IncorrectPatternException("El formato no está permitido (ej, xxx@xxx.xxx) y no debe tener mas de 40 caracteres.");
             }
             //Comprobamos que la contraseña se alfanumerica, tenga mayúsculas, minúsculas y tenga más de 8 carácteres
             contraseña = psw_contra.getText();
-            if ((!(passwordMatcher.matcher(contraseña).matches()) || contraseña.length() < 8) && (!passwordMatcher.matcher(txt_contraReve.getText()).matches() || txt_contraReve.getText().length() < 8)) {
+            //Añadimos las comprobaciones de campos vacios pedidas para la modificacion
+            if (psw_contra.getText().trim().isEmpty() || psw_contraRepe.getText().trim().isEmpty()) {
+                psw_contra.requestFocus();
+                lbl_error.setVisible(true);
+                lbl_error.setText("Por favor, introduzca las contraseñas");
+                throw new EmptyFieldException("Has dejado un campo sin informar");
+                //Comprobamos que las contraseñas coinciden
+            } else if ((!(passwordMatcher.matcher(contraseña).matches()) || contraseña.length() < 8) && (!passwordMatcher.matcher(txt_contraReve.getText()).matches() || txt_contraReve.getText().length() < 8)) {
                 psw_contra.setText("");
                 txt_contraReve.setText("");
                 throw new IncorrectPatternException("Formato erroneo, introduce más 8 carácteres alfanuméricos"
                         + " añade una minuscula o mayúscula al menos.");
-                //Comprobamos que las contraseñas coinciden
-            } else if ((!psw_contra.getText().equals(psw_contraRepe.getText()))&& (!passwordMatcher.matcher(txt_contraRepeReve.getText()).matches() || txt_contraRepeReve.getText().length() < 8)) {
+                //Añadimos las comprobaciones de campos vacios pedidas para la modificacion
+            } else if ((!psw_contra.getText().equals(psw_contraRepe.getText())) && (!passwordMatcher.matcher(txt_contraRepeReve.getText()).matches() || txt_contraRepeReve.getText().length() < 8)) {
                 psw_contraRepe.setText("");
                 txt_contraRepeReve.setText("");
                 throw new PasswordDoesntMatchException("Las contraseñas no coinciden.");
             }
-            //Comprobamos que el código postal tenga un formato de 5 digitos
+            //Añadimos las comprobaciones de campos vacios pedidas para la modificacion
+            if (txt_direccion.getText().trim().isEmpty()) {
+                txt_direccion.requestFocus();
+                lbl_error.setVisible(true);
+                lbl_error.setText("Por favor, introduzca la dirección");
+                throw new EmptyFieldException("Has dejado un campo sin informar");
+            }
+            //Añadimos las comprobaciones de campos vacios pedidas para la modificacion
             zip = txt_zip.getText();
-            if (!(zipMatcher.matcher(zip).matches())) {
+            if (zip.isEmpty()) {
+                txt_zip.requestFocus();
+                lbl_error.setVisible(true);
+                lbl_error.setText("Por favor, introduzca el código zip");
+                throw new EmptyFieldException("Has dejado un campo sin informar");
+                //Comprobamos que el código postal tenga un formato de 5 digitos
+            } else if (!(zipMatcher.matcher(zip).matches())) {
                 txt_zip.setText("");
                 throw new IncorrectPatternException("El formato no está permitido, (ej, 45320).");
             }
-            //Comprobamos que el teléfono tiene el patrón estándar español de 9 digitos
+            //Añadimos las comprobaciones de campos vacios pedidas para la modificacion
             telefono = "+34" + txt_tele.getText();
-            if (!(phoneMatcher.matcher(telefono).matches())) {
+            if (txt_tele.getText().isEmpty()) {
+                txt_tele.requestFocus();
+                lbl_error.setVisible(true);
+                lbl_error.setText("Por favor, introduzca el teléfono");
+                throw new EmptyFieldException("Has dejado un campo sin informar");
+                //Comprobamos que el teléfono tiene el patrón estándar español de 9 digitos
+            } else if (!(phoneMatcher.matcher(telefono).matches())) {
                 txt_tele.setText("");
                 throw new IncorrectPatternException("El formato no está permitido, (ej, +34 643 567 453/ 945 564 234).");
             }
@@ -334,18 +374,13 @@ public class RegistroController {
             ventana.setContentText("Has logrado registrarte");
             Optional<ButtonType> accion = ventana.showAndWait();
             if (accion.get() == ButtonType.OK) {
-                txt_nombre.setText("");
-                txt_email.setText("");
-                psw_contra.setText("");
-                psw_contraRepe.setText("");
-                txt_contraReve.setText("");
-                txt_contraRepeReve.setText("");
-                txt_direccion.setText("");
-                txt_zip.setText("");
-                txt_tele.setText("");
-                lbl_error.setText("");
-                txt_nombre.requestFocus();
-                event.consume();
+                //Una vez la respuesta del usuario sea pulsar el boton de aceptar, iniciamos la ventana de inicio sesion.
+                LOGGER.info("Iniciando la ventana de Inicio de sesión");
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/InicioSesion.fxml"));
+                Parent root = (Parent) loader.load();
+                InicioSesionController signIn = ((InicioSesionController) loader.getController());
+                signIn.setStage(stage);
+                signIn.initStage(root);
             } else {
                 txt_nombre.setText("");
                 txt_email.setText("");
@@ -375,6 +410,9 @@ public class RegistroController {
             txt_nombre.requestFocus();
             lbl_error.setVisible(true);
             lbl_error.setText(e.getMessage());
+            LOGGER.severe(e.getMessage());
+        } catch (EmptyFieldException e) {
+            lbl_error.setVisible(true);
             LOGGER.severe(e.getMessage());
         } catch (ConnectException e) {
             txt_nombre.requestFocus();
@@ -408,7 +446,7 @@ public class RegistroController {
                 Cada vez que salte un error y se muestre en el lbl_error si se escribe en cualquiera
                 de los campos el texto se vaciará y se hará invisible
              */
-            btn_registro.setDisable(true);
+            //btn_registro.setDisable(true);
             lbl_error.setText("");
             lbl_error.setVisible(false);
         }

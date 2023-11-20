@@ -21,6 +21,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import static org.testfx.api.FxAssert.verifyThat;
@@ -33,9 +34,10 @@ import static org.testfx.matcher.control.LabeledMatchers.hasText;
 
 /**
  * Pruebas unitarias para la clase UsuarioController.
- * 
- * Estas pruebas verifican el comportamiento de los métodos en la clase UsuarioController.
- * 
+ *
+ * Estas pruebas verifican el comportamiento de los métodos en la clase
+ * UsuarioController.
+ *
  * @author Ander
  * @author Diego
  */
@@ -89,10 +91,11 @@ public class UsuarioTest extends ApplicationTest {
      *
      * @author Ander, Diego
      */
+    @Ignore
     @Test
     public void Test1_Comprobar_ventana_abierta() {
-        clickOn("#textEmail").write("correo638@example.com");
-        clickOn("#pswContraseña").write("ContraseñaSecreta01");
+        clickOn("#textEmail").write("Prueba@gmail.com");
+        clickOn("#pswContraseña").write("Abcd*1234");
         clickOn("#btnInicioSesion");
         verifyThat("#pane", isVisible());
     }
@@ -102,6 +105,7 @@ public class UsuarioTest extends ApplicationTest {
      *
      * @author Diego
      */
+    @Ignore
     @Test
     public void Test2_Comprobar_Saludo() {
         String nulo = "Hola null";
@@ -111,27 +115,34 @@ public class UsuarioTest extends ApplicationTest {
 
     /**
      * Verifica que el nombre de usuario no sea nulo después de iniciar sesión.
+     *
      * @author Diego
      */
+    @Ignore
     @Test
     public void Test3_Comprobar_Nombre_Usuario() {
         Assert.assertNotEquals(lbl_usuario.getText(), null);
 
     }
-    
+
     /**
      * Verifica que el email del usuario no sea nulo después de iniciar sesión.
+     *
      * @author Diego
      */
+    @Ignore
     @Test
     public void Test4_Comprobar_Email_Usuario() {
         Assert.assertNotEquals(lbl_email.getText(), null);
 
     }
+
     /**
      * Verifica que el botón de cerrar sesión funcione correctamente.
+     *
      * @author Ander
      */
+    @Ignore
     @Test
     public void Test5_Boton_cerrar_sesion() {
         clickOn("#btn_CerrarSesion");

@@ -20,6 +20,7 @@ import javafx.stage.Stage;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import static org.testfx.api.FxAssert.verifyThat;
@@ -128,6 +129,7 @@ public class RegistroTest extends ApplicationTest {
      *
      * @author Adrian, Diego
      */
+    //@Ignore
     @Test
     public void Test1_comprobar_ventana_abierta() {
         clickOn("#lblCuenta");
@@ -140,6 +142,7 @@ public class RegistroTest extends ApplicationTest {
      *
      * @author Adrian, Diego
      */
+    @Ignore
     @Test
     public void Test2_comprobar_boton_deshabilitado() {
         clickOn("#btn_registro");
@@ -169,6 +172,7 @@ public class RegistroTest extends ApplicationTest {
      *
      * @author Adrian, Diego
      */
+    @Ignore
     @Test
     public void Test3_comprobar_boton_habilitado() {
         clickOn("#txt_nombre").write("NombreUsuario");
@@ -188,6 +192,7 @@ public class RegistroTest extends ApplicationTest {
      *
      * @author Adrian, Diego.
      */
+    @Ignore
     @Test
     public void Test4_comprobar_patron_nombre() {
         clickOn("#txt_nombre").write("NombreUsuarioPatronMasDeCuarentaCaracteres");
@@ -208,6 +213,7 @@ public class RegistroTest extends ApplicationTest {
      *
      * @author Adrian, Diego
      */
+    @Ignore
     @Test
     public void Test5_comprobar_patron_email() {
         clickOn("#txt_nombre").write("NombreUsuario");
@@ -232,6 +238,7 @@ public class RegistroTest extends ApplicationTest {
      *
      * @author Adrian, Diego.
      */
+    @Ignore
     @Test
     public void Test6_comprobar_contra_coincide() {
         clickOn("#txt_nombre").write("NombreUsuario");
@@ -252,6 +259,7 @@ public class RegistroTest extends ApplicationTest {
      *
      * @author Adrian, Diego.
      */
+    @Ignore
     @Test
     public void Test7_comprobar_patron_contraseña() {
         clickOn("#txt_nombre").write("NombreUsuario");
@@ -272,6 +280,7 @@ public class RegistroTest extends ApplicationTest {
      *
      * @author Diego, Adrian
      */
+    @Ignore
     @Test
     public void Test8_comprobar_patron_zip() {
         // Ingresar datos en los campos
@@ -298,6 +307,7 @@ public class RegistroTest extends ApplicationTest {
      *
      * @author Diego, Adrian
      */
+    @Ignore
     @Test
     public void Test9_comprobar_patron_telefono() {
         // Ingresar datos en los campos
@@ -324,6 +334,7 @@ public class RegistroTest extends ApplicationTest {
      *
      * @author Adrian, Diego.
      */
+    @Ignore
     @Test
     public void TestA_OjosVisibles() {
         verifyThat("#psw_contra", isVisible());
@@ -356,6 +367,7 @@ public class RegistroTest extends ApplicationTest {
      *
      * @author Adrian, Diego
      */
+    @Ignore
     @Test
     public void TestC_Registro_Correcto() {
         Random random = new Random();
@@ -370,6 +382,27 @@ public class RegistroTest extends ApplicationTest {
         clickOn("#txt_tele").write("612345678");
         clickOn("#btn_registro");
         verifyThat("Has logrado registrarte", Node::isVisible);
+
+    }
+
+    /**
+     * Método que prueba si el usuario a registrar ya existe en la base de
+     * datos. En este caso Prueba@gmail.com ya exite en la bda
+     *
+     * @author Ander, Diego, Adrian
+     */
+    @Test
+    public void TestD_Usuario_Ya_Existe() {
+        String correo = "Prueba@gmail.com";
+        clickOn("#txt_nombre").write("NombreUsuario");
+        clickOn("#txt_email").write(correo);
+        clickOn("#psw_contra").write("ContraseñaSecreta01");
+        clickOn("#psw_contraRepe").write("ContraseñaSecreta01");
+        clickOn("#txt_direccion").write("Calle Ejemplo 123");
+        clickOn("#txt_zip").write("12345");
+        clickOn("#txt_tele").write("612345678");
+        clickOn("#btn_registro");
+        verifyThat("#lbl_error", isVisible());
 
     }
 

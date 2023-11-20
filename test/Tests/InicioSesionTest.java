@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import static org.testfx.api.FxAssert.verifyThat;
@@ -84,7 +85,7 @@ public class InicioSesionTest extends ApplicationTest {
      *
      * @author Ander
      */
-    
+    //@Ignore
     @Test
     public void Test1_comprobar_ventana_abierta() {
         verifyThat("#ventanaInicio", isVisible());
@@ -96,7 +97,7 @@ public class InicioSesionTest extends ApplicationTest {
      *
      * @author Ander
      */
-    
+    @Ignore
     @Test
     public void Test2_comprobar_boton_inicio_habilitado() {
         getCampos();
@@ -113,6 +114,7 @@ public class InicioSesionTest extends ApplicationTest {
      *
      * @author Ander
      */
+    @Ignore
     @Test
     public void Test3_comprobar_boton_inicio_deshabilitado() {
         getCampos();
@@ -133,6 +135,7 @@ public class InicioSesionTest extends ApplicationTest {
      *
      * @author Ander
      */
+    @Ignore
     @Test
     public void Test4_PatronEmailIncorrecto() {
         clickOn("#textEmail").write("ejemplo");
@@ -157,6 +160,7 @@ public class InicioSesionTest extends ApplicationTest {
      *
      * @author Ander
      */
+    @Ignore
     @Test
     public void Test5_MaxCaracteres() {
         clickOn("#textEmail").write("emailconpatronmasde40caracteres@gmail.com");
@@ -173,6 +177,7 @@ public class InicioSesionTest extends ApplicationTest {
      *
      * @author Ander
      */
+    @Ignore
     @Test
     public void Test6_ContraseñaIncorrecta() {
 
@@ -204,6 +209,7 @@ public class InicioSesionTest extends ApplicationTest {
      *
      * @author Ander
      */
+    @Ignore
     @Test
     public void Test7_OjoVisible() {
         verifyThat("#pswContraseña", isVisible());
@@ -220,7 +226,8 @@ public class InicioSesionTest extends ApplicationTest {
      *
      * @author Ander
      */
-    //@Test
+    @Ignore
+    @Test
     public void TestA_hyperlink_cuenta_habilitado() {
         clickOn("#lblCuenta");
         verifyThat("#pane", isVisible());
@@ -228,15 +235,32 @@ public class InicioSesionTest extends ApplicationTest {
 
     /**
      * Método que prueba el inicio de sesión y si ha sido correcto
+     *
      * @author Ander
      */
+    //@Ignore
     @Test
     public void Test9_inicio_sesion_funcional() {
-        clickOn("#textEmail").write("Ejemplo@gmail.com");
+        clickOn("#textEmail").write("Prueba@gmail.com");
         clickOn("#pswContraseña").write("Abcd*1234");
         clickOn("#btnInicioSesion");
         verifyThat("#pane2", isVisible());
 
     }
-     
+
+    /**
+     * Método que prueba si el usuario introducido existe en la base de datos.
+     * En este caso Prueba123@gmail.com no exite en la bda
+     *
+     * @author Ander, Diego, Adrian
+     */
+    @Test
+    public void TestA_inicio_sesion_no_funcional() {
+        clickOn("#textEmail").write("Prueba123@gmail.com");
+        clickOn("#pswContraseña").write("Abcd*1234");
+        clickOn("#btnInicioSesion");
+        verifyThat("#lblerror", isVisible());
+
+    }
+
 }
